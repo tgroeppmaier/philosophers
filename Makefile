@@ -1,8 +1,9 @@
 CC=clang
 CFLAGS = -Wall -Wextra -Werror -g
 NAME = philo
-SRC = main.c input_check.c
+SRC = main.c check_input.c parse_input.c initialize.c
 OBJ = $(SRC:.c=.o)
+HEADER = philo.h
 
 .PHONY: all fclean re
 
@@ -13,6 +14,8 @@ $(NAME): $(OBJ)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ): $(HEADER)
 	
 clean:
 	rm -f $(OBJ)

@@ -1,6 +1,4 @@
-#include <stdbool.h>
-#include <unistd.h>
-#include <limits.h>
+#include "philo.h"
 
 int	ft_isdigit(int c)
 {

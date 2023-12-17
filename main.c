@@ -1,13 +1,8 @@
-#include <pthread.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include "philo.h"
 
 bool	check_input(int argc, char **argv)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (5 != argc && 6 != argc)
@@ -15,9 +10,9 @@ bool	check_input(int argc, char **argv)
 		printf("wrong input count\n");
 		return (false);
 	}
-	while(++i < argc)
+	while (++i < argc)
 	{
-		if(!(is_valid_int(argv[i])))
+		if (!(is_valid_int(argv[i])))
 		{
 			printf("not a valid int\n");
 			return (false);
@@ -28,7 +23,9 @@ bool	check_input(int argc, char **argv)
 
 int	main(int argc, char **argv)
 {
+	t_table table;
+
 	if (!check_input(argc, argv))
-		return(1);
-	return(0);
+		return (1);
+	return (0);
 }
