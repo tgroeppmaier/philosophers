@@ -12,13 +12,11 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC) -o $@ $(OBJ)
 
-%.o: %.c
+%.o: %.c $(HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ): $(HEADER)
-	
 clean:
-	rm -f $(OBJ)
+	rm -f $(OBJ) 
 
 fclean: clean
 	rm -f $(NAME)

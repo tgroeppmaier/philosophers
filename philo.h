@@ -8,7 +8,7 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-typedef pthread_mutex_t	t_mtx;
+typedef pthread_mutex_t t_mtx;
 typedef struct s_philo	t_philo;
 
 typedef struct s_fork
@@ -23,7 +23,7 @@ typedef struct s_table
 	int					time_to_die;
 	int					time_to_eat;
 	int					time_to_sleep;
-	int					nbr_max_meals;
+	int					max_meals_each;
 	long				start_time;
 	bool				end_simulation;
 	t_fork				*fork_array;
@@ -42,6 +42,12 @@ typedef struct s_philo
 	t_table				*table;
 }						t_philo;
 
+/* check_input.c */
 bool					is_valid_int(char *str);
+
+/* parse_input.c */
 int						ft_atoi(const char *str);
+
+/* initialize.c */
+void					initialize_data(int argc, char **argv, t_table *table);
 #endif
