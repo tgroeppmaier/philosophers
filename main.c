@@ -1,24 +1,21 @@
 #include "philo.h"
 
-bool	check_input(int argc, char **argv)
+void	check_input(int argc, char **argv)
 {
 	int	i;
 
 	i = 0;
 	if (5 != argc && 6 != argc)
-	{
-		printf("wrong input count\n");
-		return (false);
-	}
+		error_exit(1, "wrong argc\n");
 	while (++i < argc)
 	{
 		if (!(is_valid_int(argv[i])))
-		{
-			printf("not a valid int\n");
-			return (false);
-		}
+			error_exit(1, "not valid integer\n");
 	}
-	return (true);
+	if(ft_atoi(argv[1]) < 1 || ft_atoi(argv[1]) > 200)
+		error_exit(1, "invalid philo number\n");
+	if(ft_atoi(argv[2]) < 60 || ft_atoi(argv[3]) < 60 || ft_atoi(argv[4]) < 60 )
+		error_exit(1, "no time values lower than 60 allowed\n");
 }
 
 /* ./philo no_philo t2die t2eat t2sleep [no_max_meals_each] */
@@ -27,8 +24,7 @@ int	main(int argc, char **argv)
 {
 	t_table table;
 
-	if (!check_input(argc, argv))
-		return (1);
+	check_input(argc, argv);
 	initialize_data(argc, argv, &table);
 	printf("number of philos: %d\n", table.philo_count);
 	printf("time to die: %d\n", table.time_to_die);
