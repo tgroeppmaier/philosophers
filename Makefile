@@ -1,7 +1,7 @@
 CC=clang
 CFLAGS = -Wall -Wextra -Werror -g
 NAME = philo
-SRC = main.c check_input.c parse_input.c initialize.c
+SRC = main.c check_input.c parse_input.c initialize.c libft.c free.c
 OBJ = $(SRC:.c=.o)
 HEADER = philo.h
 
