@@ -57,6 +57,6 @@ size_t					ft_strlen(const char *s);
 
 /* free.c */
 void					error_exit(int exit_code, char *message);
-void					free_array(t_philo ***array, int n);
+void					free_array(void ***array, int n);
 
 #endif

@@ -14,13 +14,36 @@ t_philo	**create_philo_arr(t_table *table)
 		array[i] = (t_philo *)malloc(sizeof(t_philo));
 		if (!array[i])
 		{
-			free_array(&array, i);
+			free_array((void ***)&array, i);
 			return (NULL);
 		}
 		// printf("i = %d\n", i);
 		i++;
 	}
 	return (array);
+}
+
+t_fork **create_fork_arr(t_table *table)
+{
+	t_fork **array;
+	int	i;
+
+	i = 0;
+	array = (t_fork **)malloc(sizeof(t_fork *) * table->philo_count);
+	if(!array)
+		return(NULL);
+	while (i < table->philo_count)
+	{
+		array[i] = (t_fork *)malloc(sizeof(t_fork));
+		if (!array[i])
+		{
+			free_array((void ***)table->philo_array, i);
+			free_array((void ***)&array, i);
+			return (NULL);
+		}
+		i++;
+	}
+	return(array);
 }
 
 void	initialize_table(int argc, char **argv, t_table *table)
@@ -41,5 +64,8 @@ void	initialize_data(int argc, char **argv, t_table *table)
 	initialize_table(argc, argv, table);
 	table->philo_array = create_philo_arr(table);
 	if (!table->philo_array)
-		error_exit(1, "malloc fail creation philo array");
+		error_exit(1, "malloc fail creation philo array\n");
+	table->fork_array = create_fork_arr(table);
+	if (!table->philo_array)
+		error_exit(1, "malloc fail creation fork array\n");
 }
