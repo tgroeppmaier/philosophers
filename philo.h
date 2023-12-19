@@ -44,19 +44,18 @@ typedef struct s_table
 }						t_table;
 
 /* check_input.c */
-bool					is_valid_int(char *str);
-
-/* parse_input.c */
-int						ft_atoi(const char *str);
+void					check_input(int argc, char **argv);
 
 /* initialize.c */
 void					initialize_data(int argc, char **argv, t_table *table);
 
 /* libft.c */
 size_t					ft_strlen(const char *s);
+int						ft_atoi(const char *str);
 
 /* free.c */
 void					error_exit(int exit_code, char *message);
 void					free_array(void ***array, int n);
+void					free_both_arrays(t_table *table);
 
 #endif

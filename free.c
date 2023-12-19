@@ -6,6 +6,11 @@ void	error_exit(int exit_code, char *message)
 	exit(exit_code);
 }
 
+void	free_both_arrays(t_table *table)
+{
+	free_array((void ***)&table->philo_array, table->philo_count);
+	free_array((void ***)&table->fork_array, table->philo_count);
+}
 void	free_array(void ***array, int n)
 {
 	int i;
