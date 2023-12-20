@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "philo.h"
 
 long	get_time_diff(struct timeval start_time)
@@ -11,15 +12,15 @@ long	get_time_diff(struct timeval start_time)
 	return (time_diff);
 }
 
-void	print_status(t_philo *philo, char *status)
-{
-	long	time_diff;
+// void	print_status(t_philo *philo, char *status)
+// {
+// 	long	time_diff;
 
-	time_diff = get_time_diff(philo->table->start_time);
-	pthread_mutex_lock(&philo->table->print_mutex);
-	printf("%ld ms: %d %s\n", time_diff, philo->id, status);
-	pthread_mutex_unlock(&philo->table->print_mutex);
-}
+// 	time_diff = get_time_diff(philo->table->start_time);
+// 	pthread_mutex_lock(&philo->table->print_mutex);
+// 	printf("%ld ms: %d %s\n", time_diff, philo->id, status);
+// 	pthread_mutex_unlock(&philo->table->print_mutex);
+// }
 
 void	philo_routine_even(t_philo *philo)
 {
@@ -75,7 +76,7 @@ void	*philo_start(void *data)
 	{
 		philo_routine_odd(philo);
 	}
-	return(NULL);
+	return (NULL);
 }
 
 void	start_threads(t_table *table)
@@ -96,8 +97,14 @@ void	start_threads(t_table *table)
 		i++;
 	}
 	for (i = 0; i < table->philo_count; i++)
-    {
-        pthread_join(table->philo_array[i]->thread_id, NULL);
-    }
+	{
+		pthread_join(table->philo_array[i]->thread_id, NULL);
+	}
 	print_status(table->philo_array[0], "end of simulatio\n");
+	pthread_mutex_lock(&table->buffer_mutex);
+	if (table->buffer_index > 0)
+	{
+		write(1, table->buffer, table->buffer_index);
+	}
+	pthread_mutex_unlock(&table->buffer_mutex);
 }

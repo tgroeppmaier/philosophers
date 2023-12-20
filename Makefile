@@ -1,7 +1,7 @@
 CC=clang
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g# -fsanitize=thread -std=c11 -pthread -D_XOPEN_SOURCE=600
 NAME = philo
-SRC = main.c check_input.c initialize.c libft.c free.c start.c
+SRC = main.c check_input.c initialize.c libft.c free.c start.c print_status.c
 OBJ = $(SRC:.c=.o)
 HEADER = philo.h
 

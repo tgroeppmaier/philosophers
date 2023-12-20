@@ -1,4 +1,5 @@
 #include "philo.h"
+#include <string.h>
 
 t_philo	**create_philo_arr(t_table *table)
 {
@@ -61,6 +62,7 @@ void	initialize_forks(t_table *table)
 
 void	initialize_table(int argc, char **argv, t_table *table)
 {
+	memset(table, 0, sizeof(*table));
 	table->philo_count = ft_atoi(argv[1]);
 	table->time_to_die = ft_atoi(argv[2]) * 1e3;
 	table->time_to_eat = ft_atoi(argv[3]) * 1e3;
@@ -71,6 +73,7 @@ void	initialize_table(int argc, char **argv, t_table *table)
 		table->max_meals = ft_atoi(argv[5]);
 	table->end_simulation = false;
 	pthread_mutex_init(&table->print_mutex, NULL);
+	pthread_mutex_init(&table->buffer_mutex	, NULL);
 }
 
 /* the left fork is his own (id) and the right fork is the id of the philo
