@@ -89,6 +89,7 @@ void	initialize_philo(t_table *table)
 		table->philo_array[i]->table = table;
 		table->philo_array[i]->left_fork = table->fork_array[i];
 		table->philo_array[i]->right_fork = table->fork_array[right_fork];
+		table->philo_array[i]->meals_counter = 0;
 		i++;
 	}
 }

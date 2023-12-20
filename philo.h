@@ -1,6 +1,7 @@
 #ifndef PHILO_H
 # define PHILO_H
 
+// #define BUFFER_SIZE 1000
 # include <limits.h>
 # include <pthread.h>
 # include <stdbool.h>
@@ -59,4 +60,6 @@ void					error_exit(int exit_code, char *message);
 void					free_array(void ***array, int n);
 void					free_both_arrays(t_table *table);
 
+/* start.c */
+void	start_threads(t_table *table);
 #endif
