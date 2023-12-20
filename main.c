@@ -12,7 +12,7 @@ int	main(int argc, char **argv)
 	printf("time to die: %d\n", table.time_to_die);
 	printf("time to eat: %d\n", table.time_to_eat);
 	printf("time to sleep: %d\n", table.time_to_sleep);
-	printf("max meals each: %d\n", table.max_meals_each);
+	printf("max meals each: %d\n", table.max_meals);
 	free_both_arrays(&table);
 	return (0);
 }

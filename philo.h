@@ -36,9 +36,10 @@ typedef struct s_table
 	int					time_to_die;
 	int					time_to_eat;
 	int					time_to_sleep;
-	int					max_meals_each;
-	long				start_time;
+	int					max_meals;
+	struct timeval		start_time;
 	bool				end_simulation;
+	t_mtx				print_mutex;
 	t_fork				**fork_array;
 	t_philo				**philo_array;
 }						t_table;

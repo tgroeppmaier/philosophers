@@ -66,12 +66,15 @@ void	initialize_table(int argc, char **argv, t_table *table)
 	table->time_to_eat = ft_atoi(argv[3]) * 1e3;
 	table->time_to_sleep = ft_atoi(argv[4]) * 1e3;
 	if (argc == 5)
-		table->max_meals_each = -1;
+		table->max_meals = -1;
 	else
-		table->max_meals_each = ft_atoi(argv[5]);
+		table->max_meals = ft_atoi(argv[5]);
 	table->end_simulation = false;
+	pthread_mutex_init(&table->print_mutex, NULL);
 }
 
+/* the left fork is his own (id) and the right fork is the id of the philo
+next in the array */
 void	initialize_philo(t_table *table)
 {
 	int	i;
