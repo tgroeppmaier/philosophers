@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -pthread
 NAME = philo
 SRC = main.c check_input.c initialize.c libft.c free.c start.c
 OBJ = $(SRC:.c=.o)

@@ -2,13 +2,13 @@
 # define PHILO_H
 
 // #define BUFFER_SIZE 1000
-# include <limits.h>
 # include <pthread.h>
+# include <unistd.h>
+# include <limits.h>
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
-# include <unistd.h>
 
 typedef pthread_mutex_t	t_mtx;
 typedef struct s_table	t_table;

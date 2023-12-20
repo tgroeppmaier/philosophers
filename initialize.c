@@ -61,6 +61,8 @@ void	initialize_forks(t_table *table)
 
 void	initialize_table(int argc, char **argv, t_table *table)
 {
+	int err;
+
 	table->philo_count = ft_atoi(argv[1]);
 	table->time_to_die = ft_atoi(argv[2]) * 1e3;
 	table->time_to_eat = ft_atoi(argv[3]) * 1e3;
@@ -70,7 +72,11 @@ void	initialize_table(int argc, char **argv, t_table *table)
 	else
 		table->max_meals = ft_atoi(argv[5]);
 	table->end_simulation = false;
-	pthread_mutex_init(&table->print_mutex, NULL);
+
+	err = pthread_mutex_init(&table->print_mutex, NULL);
+	if (err != 0) {
+		error_exit(1, "Failed to initialize print_mutex\n");
+	}
 }
 
 /* the left fork is his own (id) and the right fork is the id of the philo
@@ -103,6 +109,6 @@ void	initialize_data(int argc, char **argv, t_table *table)
 	table->fork_array = create_fork_arr(table);
 	if (!table->fork_array)
 		error_exit(1, "malloc fail creation fork array\n");
-	initialize_philo(table);
 	initialize_forks(table);
+	initialize_philo(table);
 }

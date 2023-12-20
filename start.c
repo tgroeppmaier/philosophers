@@ -30,10 +30,10 @@ void	philo_routine_even(t_philo *philo)
 		print_status(philo, "has taken a fork\n");
 		pthread_mutex_lock(&philo->right_fork->fork);
 		print_status(philo, "has taken a fork\n");
-		pthread_mutex_unlock(&philo->left_fork->fork);
-		pthread_mutex_unlock(&philo->right_fork->fork);
 		print_status(philo, "is eating\n");
 		usleep(philo->table->time_to_eat);
+		pthread_mutex_unlock(&philo->right_fork->fork);
+		pthread_mutex_unlock(&philo->left_fork->fork);
 		print_status(philo, "is sleeping\n");
 		usleep(philo->table->time_to_sleep);
 		print_status(philo, "is thinking\n");
@@ -43,25 +43,26 @@ void	philo_routine_even(t_philo *philo)
 
 void	philo_routine_odd(t_philo *philo)
 {
-	usleep(philo->table->time_to_eat);
+	if (philo->id != 1) {
+		usleep(philo->table->time_to_eat);
+	}
 	while (philo->meals_counter < philo->table->max_meals
 		|| philo->table->max_meals == -1)
 	{
-		pthread_mutex_lock(&philo->left_fork->fork);
-		print_status(philo, "has taken a fork\n");
 		pthread_mutex_lock(&philo->right_fork->fork);
 		print_status(philo, "has taken a fork\n");
-		pthread_mutex_unlock(&philo->left_fork->fork);
-		pthread_mutex_unlock(&philo->right_fork->fork);
+		pthread_mutex_lock(&philo->left_fork->fork);
+		print_status(philo, "has taken a fork\n");
 		print_status(philo, "is eating\n");
 		usleep(philo->table->time_to_eat);
+		pthread_mutex_unlock(&philo->left_fork->fork);
+		pthread_mutex_unlock(&philo->right_fork->fork);
 		print_status(philo, "is sleeping\n");
 		usleep(philo->table->time_to_sleep);
 		print_status(philo, "is thinking\n");
 		philo->meals_counter++;
 	}
 }
-
 void	*philo_start(void *data)
 {
 	t_philo	*philo;
