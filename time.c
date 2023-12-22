@@ -1,33 +1,34 @@
-#include <stdio.h>
-#include <sys/time.h>
-#include <unistd.h>
+#include "philo.h"
 
-// Function that returns the current time since the 
-// 1st of January 1970 in milliseconds
-time_t	get_time_in_ms(void)
+void	wait_until_time(struct timeval start_time, long wait_time)
 {
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+	struct timeval current_time;
+	gettimeofday(&current_time, NULL);
+	long time_diff = (current_time.tv_sec * 1e6 + current_time.tv_usec)
+		- (start_time.tv_sec * 1e6 + start_time.tv_usec);
+	if (time_diff < wait_time)
+	{
+		usleep(wait_time - time_diff);
+	}
 }
 
-int	main(void)
+long	get_time_diff(struct timeval start_time)
 {
-	time_t	start_time;
-	time_t	end_time;
-	time_t	time;
+	struct timeval	current_time;
+	long			time_diff;
 
-	start_time = get_time_in_ms();
-	end_time = start_time + 2000;
-	time = get_time_in_ms();
-	printf("Time in ms = %ld. Time since start = %ld\n", time, time - start_time);
-	while (get_time_in_ms() < end_time)
-	{
-		usleep(100 * 1000); // Suspend for 100 milliseconds
-		time = get_time_in_ms();
-		printf("Time in ms = %ld. Time since start = %ld\n",
-						time, time - start_time);
-	}
-	return (0);
+	gettimeofday(&current_time, NULL);
+	time_diff = (current_time.tv_sec - start_time.tv_sec) * 1000
+		+ (current_time.tv_usec - start_time.tv_usec) / 1000;
+	return (time_diff);
+}
+
+void	print_last_meal_time(t_philo *philo)
+{
+	long	time_diff;
+
+	time_diff = get_time_diff(philo->table->start_time);
+	pthread_mutex_lock(&philo->table->print_mutex);
+	printf("%ld ms: %ld last meal time %ld\n", time_diff, philo->id, philo->last_meal_time);
+	pthread_mutex_unlock(&philo->table->print_mutex);
 }

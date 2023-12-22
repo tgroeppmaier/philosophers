@@ -21,10 +21,11 @@ typedef struct s_fork
 
 typedef struct s_philo
 {
-	int					id;
-	int					meals_counter;
-	bool				full;
+	long				id;
+	long				meals_counter;
+	long				full;
 	long				last_meal_time;
+	t_mtx				lock;
 	t_fork				*left_fork;
 	t_fork				*right_fork;
 	pthread_t			thread_id;
@@ -39,8 +40,10 @@ typedef struct s_table
 	int					time_to_sleep;
 	int					max_meals;
 	struct timeval		start_time;
-	bool				end_simulation;
+	long				end_simulation;
+	t_mtx				end_lock;
 	t_mtx				print_mutex;
+	pthread_t			sup_thread_id;
 	t_fork				**fork_array;
 	t_philo				**philo_array;
 }						t_table;
@@ -62,4 +65,18 @@ void					free_both_arrays(t_table *table);
 
 /* start.c */
 void	start_threads(t_table *table);
+void	print_status(t_philo *philo, char *status);
+
+/* getter_setter.c */
+long get_long(t_mtx *lock, long *value);
+void set_long(t_mtx *lock, long *old, long new);
+
+/* time. */
+
+void	wait_until_time(struct timeval start_time, long wait_time);
+long	get_time_diff(struct timeval start_time);
+void	print_last_meal_time(t_philo *philo);
+
+/* supervisor.c */
+void	*supervisor(void *data);
 #endif

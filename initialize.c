@@ -71,7 +71,7 @@ void	initialize_table(int argc, char **argv, t_table *table)
 		table->max_meals = -1;
 	else
 		table->max_meals = ft_atoi(argv[5]);
-	table->end_simulation = false;
+	table->end_simulation = 0;
 
 	err = pthread_mutex_init(&table->print_mutex, NULL);
 	if (err != 0) {
@@ -91,11 +91,12 @@ void	initialize_philo(t_table *table)
 	{
 		right_fork = (i + 1) % table->philo_count;
 		table->philo_array[i]->id = i + 1;
-		table->philo_array[i]->full = false;
+		table->philo_array[i]->full = 0;
 		table->philo_array[i]->table = table;
 		table->philo_array[i]->left_fork = table->fork_array[i];
 		table->philo_array[i]->right_fork = table->fork_array[right_fork];
 		table->philo_array[i]->meals_counter = 0;
+		table->philo_array[i]->last_meal_time = 0;
 		i++;
 	}
 }
