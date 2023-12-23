@@ -35,7 +35,7 @@ typedef struct s_philo
 typedef struct s_table
 {
 	int					philo_count;
-	int					time_to_die;
+	long				time_to_die;
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					max_meals;

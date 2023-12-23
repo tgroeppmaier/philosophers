@@ -9,7 +9,7 @@ int	main(int argc, char **argv)
 	check_input(argc, argv);
 	initialize_data(argc, argv, &table);
 	printf("number of philos: %d\n", table.philo_count);
-	printf("time to die: %d\n", table.time_to_die);
+	printf("time to die: %ld\n", table.time_to_die);
 	printf("time to eat: %d\n", table.time_to_eat);
 	printf("time to sleep: %d\n", table.time_to_sleep);
 	printf("max meals each: %d\n", table.max_meals);

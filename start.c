@@ -12,10 +12,16 @@ void	print_status(t_philo *philo, char *status)
 
 void	philo_routine_even(t_philo *philo)
 {
+	// long time_diff;
+
 	while (philo->meals_counter < philo->table->max_meals
 		|| philo->table->max_meals == -1)
 	{
-		print_last_meal_time(philo);
+		// time_diff = get_time_diff(philo->table->start_time) - philo->last_meal_time;
+		// print_last_meal_time(philo);
+		// printf("time diff = %ld\n", time_diff);
+		if(get_long(&philo->table->end_lock, &philo->table->end_simulation) == 1)
+			break;
 		pthread_mutex_lock(&philo->left_fork->fork);
 		print_status(philo, "has taken a fork\n");
 		pthread_mutex_lock(&philo->right_fork->fork);
@@ -30,22 +36,24 @@ void	philo_routine_even(t_philo *philo)
 		print_status(philo, "is thinking\n");
 		philo->meals_counter++;
 	}
-	set_long(&philo->lock, &philo->full, 1);
+	// set_long(&philo->lock, &philo->full, 1);
 }
 
 void	philo_routine_odd(t_philo *philo)
 {
-	long time_diff;
+	// long time_diff;
 
-	if (philo->id != 1) {
-		usleep(philo->table->time_to_eat);
-	}
+	// if (philo->id != 1) {
+	// 	usleep(philo->table->time_to_eat / 4);
+	// }
 	while (philo->meals_counter < philo->table->max_meals
 		|| philo->table->max_meals == -1)
 	{
-		time_diff = get_time_diff(philo->table->start_time) - philo->last_meal_time;
-		print_last_meal_time(philo);
-		printf("time diff = %ld\n", time_diff);
+		// time_diff = get_time_diff(philo->table->start_time) - philo->last_meal_time;
+		// print_last_meal_time(philo);
+		// printf("time diff = %ld\n", time_diff);
+		if(get_long(&philo->table->end_lock, &philo->table->end_simulation) == 1)
+			break;
 		pthread_mutex_lock(&philo->right_fork->fork);
 		print_status(philo, "has taken a fork\n");
 		pthread_mutex_lock(&philo->left_fork->fork);
@@ -60,7 +68,7 @@ void	philo_routine_odd(t_philo *philo)
 		print_status(philo, "is thinking\n");
 		philo->meals_counter++;
 	}
-	set_long(&philo->lock, &philo->full, 1);
+	// set_long(&philo->lock, &philo->full, 1);
 }
 
 void	*philo_start(void *data)

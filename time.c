@@ -29,6 +29,6 @@ void	print_last_meal_time(t_philo *philo)
 
 	time_diff = get_time_diff(philo->table->start_time);
 	pthread_mutex_lock(&philo->table->print_mutex);
-	printf("%ld ms: %ld last meal time %ld\n", time_diff, philo->id, philo->last_meal_time);
+	printf("%ld ms: %ld last meal time %ld\n\n", time_diff, philo->id, philo->last_meal_time);
 	pthread_mutex_unlock(&philo->table->print_mutex);
 }

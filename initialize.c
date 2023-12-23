@@ -64,7 +64,7 @@ void	initialize_table(int argc, char **argv, t_table *table)
 	int err;
 
 	table->philo_count = ft_atoi(argv[1]);
-	table->time_to_die = ft_atoi(argv[2]) * 1e3;
+	table->time_to_die = ft_atoi(argv[2]); 
 	table->time_to_eat = ft_atoi(argv[3]) * 1e3;
 	table->time_to_sleep = ft_atoi(argv[4]) * 1e3;
 	if (argc == 5)
@@ -74,9 +74,12 @@ void	initialize_table(int argc, char **argv, t_table *table)
 	table->end_simulation = 0;
 
 	err = pthread_mutex_init(&table->print_mutex, NULL);
-	if (err != 0) {
+	if (err != 0)
 		error_exit(1, "Failed to initialize print_mutex\n");
-	}
+	err = pthread_mutex_init(&table->end_lock, NULL);
+	if (err != 0)
+		error_exit(1, "Failed to initialize end_mutex\n");
+	
 }
 
 /* the left fork is his own (id) and the right fork is the id of the philo
