@@ -34,18 +34,19 @@ void	philo_routine_even(t_philo *philo)
 		print_status(philo, "is sleeping\n");
 		usleep(philo->table->time_to_sleep);
 		print_status(philo, "is thinking\n");
+		usleep(philo->table->time_to_eat);
 		philo->meals_counter++;
 	}
-	// set_long(&philo->lock, &philo->full, 1);
+	set_long(&philo->lock, &philo->full, 1);
 }
 
 void	philo_routine_odd(t_philo *philo)
 {
 	// long time_diff;
 
-	// if (philo->id != 1) {
-	// 	usleep(philo->table->time_to_eat / 4);
-	// }
+	if (philo->id != 1) {
+		usleep(philo->table->time_to_eat);
+	}
 	while (philo->meals_counter < philo->table->max_meals
 		|| philo->table->max_meals == -1)
 	{
@@ -66,9 +67,10 @@ void	philo_routine_odd(t_philo *philo)
 		print_status(philo, "is sleeping\n");
 		usleep(philo->table->time_to_sleep);
 		print_status(philo, "is thinking\n");
+		usleep(philo->table->time_to_eat);
 		philo->meals_counter++;
 	}
-	// set_long(&philo->lock, &philo->full, 1);
+	set_long(&philo->lock, &philo->full, 1);
 }
 
 void	*philo_start(void *data)

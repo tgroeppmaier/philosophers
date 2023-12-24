@@ -25,6 +25,7 @@
 void	*supervisor(void *data)
 {
 	int i;
+	int full_philos;
 	long last_meal;
 	long time_diff;
 	long current_time;
@@ -32,11 +33,14 @@ void	*supervisor(void *data)
 
 	table = (t_table *)data;
 	i = 0;
-	while (1)
+	while (get_long(&table->end_lock, &table->end_simulation) != 1)
 	{
 		i = 0;
 		while (i < table->philo_count)
 		{
+			full_philos = 0;
+			if(get_long(&table->philo_array[i]->lock, &table->philo_array[i]->full) == 1)
+				full_philos++;
 			current_time = get_time_diff(table->start_time);
 			// printf("current time: %ld\n", current_time);
 			last_meal = get_long(&table->philo_array[i]->lock,
@@ -59,8 +63,10 @@ void	*supervisor(void *data)
 			}
 			i++;
 		}
-		if(get_long(&table->end_lock, &table->end_simulation) == 1)
+		if(full_philos == table->philo_count)
 			break;
+		// if(get_long(&table->end_lock, &table->end_simulation) == 1)
+		// 	break;
 	}
 	return(NULL);
 }
