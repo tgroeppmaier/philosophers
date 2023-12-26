@@ -88,6 +88,7 @@ void	initialize_philo(t_table *table)
 {
 	int	i;
 	int	right_fork;
+	int err;
 
 	i = 0;
 	while (i < table->philo_count)
@@ -100,6 +101,9 @@ void	initialize_philo(t_table *table)
 		table->philo_array[i]->right_fork = table->fork_array[right_fork];
 		table->philo_array[i]->meals_counter = 0;
 		table->philo_array[i]->last_meal_time = 0;
+		err = pthread_mutex_init(&table->philo_array[i]->lock, NULL);
+		if (err != 0)
+			error_exit(1, "Failed to initialize philo lock\n");
 		i++;
 	}
 }

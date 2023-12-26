@@ -2,13 +2,27 @@
 # define PHILO_H
 
 // #define BUFFER_SIZE 1000
-# include <pthread.h>
-# include <unistd.h>
 # include <limits.h>
+# include <pthread.h>
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
+# include <unistd.h>
+
+# define RESET "\033[0m"
+# define RED "\033[31m"
+# define GREEN "\033[32m"
+# define YELLOW "\033[33m"
+# define BLUE "\033[34m"
+# define MAGENTA "\033[35m"
+# define CYAN "\033[36m"
+# define WHITE "\033[37m"
+
+# define INIT 0
+# define LOCK 1
+# define UNLOCK 2
+# define DESTROY 3
 
 typedef pthread_mutex_t	t_mtx;
 typedef struct s_table	t_table;
@@ -64,19 +78,25 @@ void					free_array(void ***array, int n);
 void					free_both_arrays(t_table *table);
 
 /* start.c */
-void	start_threads(t_table *table);
-void	print_status(t_philo *philo, char *status);
+void					start_threads(t_table *table);
+void					print_status(t_philo *philo, char *status);
 
 /* getter_setter.c */
-long get_long(t_mtx *lock, long *value);
-void set_long(t_mtx *lock, long *old, long new);
+long					get_long(t_mtx *lock, long *value);
+void					set_long(t_mtx *lock, long *old, long new);
+void					mutex_handle(pthread_mutex_t *mutex, int operation);
 
 /* time. */
 
-void	wait_until_time(struct timeval start_time, long wait_time);
-long	get_time_diff(struct timeval start_time);
-void	print_last_meal_time(t_philo *philo);
+void					wait_until_time(struct timeval start_time,
+							long wait_time);
+long					get_time_diff(struct timeval start_time);
+void					print_last_meal_time(t_philo *philo);
 
 /* supervisor.c */
-void	*supervisor(void *data);
+void					*supervisor(void *data);
+
+/* mutex_handler.c */
+void					mutex_handle(pthread_mutex_t *mutex, int operation);
+
 #endif
