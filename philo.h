@@ -84,7 +84,8 @@ void					print_status(t_philo *philo, char *status);
 /* getter_setter.c */
 long					get_long(t_mtx *lock, long *value);
 void					set_long(t_mtx *lock, long *old, long new);
-void					mutex_handle(pthread_mutex_t *mutex, int operation);
+bool					get_bool(t_mtx *lock, bool *value);
+void					set_bool(t_mtx *lock, bool *old, bool new);
 
 /* time. */
 
@@ -98,5 +99,9 @@ void					*supervisor(void *data);
 
 /* mutex_handler.c */
 void					mutex_handle(pthread_mutex_t *mutex, int operation);
+
+/* operations.c */
+int						philo_eat_even(t_philo *philo);
+int						philo_eat_odd(t_philo *philo);
 
 #endif

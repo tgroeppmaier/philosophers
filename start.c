@@ -31,22 +31,15 @@ void	philo_routine_even(t_philo *philo)
 		// printf("time diff = %ld\n", time_diff);
 		if(get_long(&philo->table->end_lock, &philo->table->end_simulation) == 1)
 			break;
-		pthread_mutex_lock(&philo->left_fork->fork);
-		print_status(philo, "has taken a fork\n");
-		pthread_mutex_lock(&philo->right_fork->fork);
-		print_status(philo, "has taken a fork\n");
-		set_long(&philo->lock, &philo->last_meal_time, get_time_diff(philo->table->start_time));
-		print_status(philo, "is eating\n");
-		usleep(philo->table->time_to_eat);
-		pthread_mutex_unlock(&philo->right_fork->fork);
-		pthread_mutex_unlock(&philo->left_fork->fork);
+		if(philo_eat_even(philo) == 1)
+			break;
 		philo->meals_counter++;
 		if(philo->meals_counter == philo->table->max_meals)
 			break;
 		print_status(philo, "is sleeping\n");
 		usleep(philo->table->time_to_sleep);
 		print_status(philo, "is thinking\n");
-		usleep(philo->table->time_to_eat / 2);
+		// usleep(philo->table->time_to_eat / 2);
 		print_status_nbr(philo, "meals eaten:", philo->meals_counter);
 	}
 	set_long(&philo->lock, &philo->full, 1);
@@ -67,22 +60,15 @@ void	philo_routine_odd(t_philo *philo)
 		// printf("time diff = %ld\n", time_diff);
 		if(get_long(&philo->table->end_lock, &philo->table->end_simulation) == 1)
 			break;
-		pthread_mutex_lock(&philo->right_fork->fork);
-		print_status(philo, "has taken a fork\n");
-		pthread_mutex_lock(&philo->left_fork->fork);
-		print_status(philo, "has taken a fork\n");
-		set_long(&philo->lock, &philo->last_meal_time, get_time_diff(philo->table->start_time));
-		print_status(philo, "is eating\n");
-		usleep(philo->table->time_to_eat);
-		pthread_mutex_unlock(&philo->left_fork->fork);
-		pthread_mutex_unlock(&philo->right_fork->fork);
+		if(philo_eat_odd(philo) == 1)
+			break;
 		philo->meals_counter++;
 		if(philo->meals_counter == philo->table->max_meals)
 			break;
 		print_status(philo, "is sleeping\n");
 		usleep(philo->table->time_to_sleep);
 		print_status(philo, "is thinking\n");
-		usleep(philo->table->time_to_eat / 2);
+		// usleep(philo->table->time_to_eat / 2);
 		print_status_nbr(philo, "meals eaten:", philo->meals_counter);
 	}
 	set_long(&philo->lock, &philo->full, 1);
