@@ -40,6 +40,7 @@ void	philo_routine_even(t_philo *philo)
 		usleep(philo->table->time_to_sleep);
 		print_status(philo, "is thinking\n");
 		// usleep(philo->table->time_to_eat / 2);
+		usleep(1000);
 		print_status_nbr(philo, "meals eaten:", philo->meals_counter);
 	}
 	set_long(&philo->lock, &philo->full, 1);
@@ -69,6 +70,7 @@ void	philo_routine_odd(t_philo *philo)
 		usleep(philo->table->time_to_sleep);
 		print_status(philo, "is thinking\n");
 		// usleep(philo->table->time_to_eat / 2);
+		usleep(1000);
 		print_status_nbr(philo, "meals eaten:", philo->meals_counter);
 	}
 	set_long(&philo->lock, &philo->full, 1);
