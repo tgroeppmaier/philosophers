@@ -12,8 +12,9 @@ void	check_philo_status(t_table *table, int i, long current_time,
 	last_meal = get_long(&table->philo_array[i]->lock,
 			&table->philo_array[i]->last_meal_time);
 	time_diff = current_time - last_meal;
-	if (time_diff > table->time_to_die && get_bool(&table->philo_array[i]->lock,
-			&table->philo_array[i]->full) != true)
+	if (time_diff > table->time_to_die)
+	// if (time_diff > table->time_to_die && get_bool(&table->philo_array[i]->lock,
+	// 		&table->philo_array[i]->full) != true)
 	{
 		pthread_mutex_lock(&table->print_mutex);
 		printf(RED "%ld ms: philo %ld died!!!!\n" RESET,
