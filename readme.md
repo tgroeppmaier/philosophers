@@ -1,9 +1,14 @@
 #Philosophers
 
 
+- [To do](#to-do)
 - [Introduction](#introduction)
 - [Ending Threads and freeing rescources](#ending-threads-and-freeing-rescources)
 - [Monitor thread vs monitoring state by each Tread](#monitor-thread-vs-monitoring-state-by-each-tread)
+
+### To do 
+- philos should not die, when they are full
+- 
 
 ### Introduction
 This project is about implementing concurrency.
