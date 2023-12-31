@@ -20,7 +20,7 @@ void	check_philo_status(t_table *table, int i, long current_time,
 		printf(RED "%ld ms: philo %ld died!!!!\n" RESET,
 			get_time_diff(table->start_time), table->philo_array[i]->id);
 		pthread_mutex_unlock(&table->print_mutex);
-		set_long(&table->end_lock, &table->end_simulation, 1);
+		set_bool(&table->end_lock, &table->end_simulation, true);
 		exit(1);
 	}
 }
@@ -33,7 +33,7 @@ void	*supervisor(void *data)
 	t_table	*table;
 
 	table = (t_table *)data;
-	while (get_long(&table->end_lock, &table->end_simulation) != 1)
+	while (get_bool(&table->end_lock, &table->end_simulation) != true)
 	{
 		i = 0;
 		full_philos = 0;

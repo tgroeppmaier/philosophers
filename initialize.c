@@ -71,7 +71,7 @@ void	initialize_table(int argc, char **argv, t_table *table)
 		table->max_meals = -1;
 	else
 		table->max_meals = ft_atoi(argv[5]);
-	table->end_simulation = 0;
+	table->end_simulation = false;
 
 	err = pthread_mutex_init(&table->print_mutex, NULL);
 	if (err != 0)

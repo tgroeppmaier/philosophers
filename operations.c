@@ -2,7 +2,7 @@
 
 bool	check_end(t_table *table)
 {
-	if (get_long(&table->end_lock, &table->end_simulation) == 1)
+	if (get_bool(&table->end_lock, &table->end_simulation) == true)
 		return (true);
 	return (false);
 }
@@ -32,7 +32,7 @@ int	philo_eat_even(t_philo *philo)
 	if (check_end(philo->table))
 		return(unlock_forks(philo, 1));
 	print_status(philo, "is eating\n");
-	usleep(philo->table->time_to_eat);
+	custom_usleep(philo->table, philo->table->time_to_eat);
 	return(unlock_forks(philo, 0));
 }
 
@@ -62,7 +62,7 @@ int philo_eat_odd(t_philo *philo)
 		return (1);
 	}
 	print_status(philo, "is eating\n");
-	usleep(philo->table->time_to_eat);
+	custom_usleep(philo->table, philo->table->time_to_eat);
 	pthread_mutex_unlock(&philo->right_fork->fork);
 	pthread_mutex_unlock(&philo->left_fork->fork);
 	return(0);

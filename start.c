@@ -63,7 +63,7 @@ void	philo_routine_even(t_philo *philo)
 		// time_diff = get_time_diff(philo->table->start_time) - philo->last_meal_time;
 		// print_last_meal_time(philo);
 		// printf("time diff = %ld\n", time_diff);
-		if(get_long(&philo->table->end_lock, &philo->table->end_simulation) == 1)
+		if(get_bool(&philo->table->end_lock, &philo->table->end_simulation) == true)
 			break;
 		if(philo_eat_even(philo) == 1)
 			break;
@@ -91,7 +91,7 @@ void	philo_routine_odd(t_philo *philo)
 		// time_diff = get_time_diff(philo->table->start_time) - philo->last_meal_time;
 		// print_last_meal_time(philo);
 		// printf("time diff = %ld\n", time_diff);
-		if(get_long(&philo->table->end_lock, &philo->table->end_simulation) == 1)
+		if(get_bool(&philo->table->end_lock, &philo->table->end_simulation) == true) 
 			break;
 		if(philo_eat_odd(philo) == 1)
 			break;
