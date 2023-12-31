@@ -50,9 +50,12 @@ void	philo_routine_odd(t_philo *philo)
 {
 	// long time_diff;
 
-	if (philo->id != 1) {
+	if (philo->id != 1) 
+	{
+
 		usleep(philo->table->time_to_eat);
 	}
+	
 	while (philo->meals_counter < philo->table->max_meals
 		|| philo->table->max_meals == -1)
 	{
