@@ -26,7 +26,8 @@ int philo_think(t_philo *philo)
 	print_status(philo, "is thinking\n");
 	if(philo->table->philo_count % 2 != 0)
 	{
-		usleep(thinking_t);
+		custom_usleep(philo->table, thinking_t);
+		// usleep(thinking_t);
 	}
 	// usleep(1000);
 		return(0);

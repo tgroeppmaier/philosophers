@@ -44,7 +44,8 @@ void	philo_routine(t_philo *philo, bool even)
 		if(get_bool(&philo->table->end_lock, &philo->table->end_simulation) == true)
 			break;
 		print_status(philo, "is sleeping\n");
-		usleep(philo->table->time_to_sleep);
+		// usleep(philo->table->time_to_sleep);
+		custom_usleep(philo->table, philo->table->time_to_sleep);
 		philo_think(philo);
 	}
 	set_bool(&philo->lock, &philo->full, true);
@@ -80,7 +81,8 @@ void	start_threads(t_table *table)
 		if (pthread_create(&table->philo_array[i]->thread_id, NULL, philo_start,
 				table->philo_array[i]) != 0)
 		{
-			free_both_arrays(table);
+			free_table(table);
+			// free_both_arrays(table);
 			error_exit(1, "thread creation failed\n");
 		}
 		i++;

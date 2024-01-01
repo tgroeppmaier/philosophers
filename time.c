@@ -49,30 +49,56 @@ void	print_last_meal_time(t_philo *philo)
 int custom_usleep(t_table *table, useconds_t usec)
 {
 	struct timeval start_time, current_time;
-	long elapsed_time, sleep_time;
+	long elapsed_time;
 
 	gettimeofday(&start_time, NULL);
 
-	while (usec > 0)
+	while (1)
 	{
 		gettimeofday(&current_time, NULL);
 		elapsed_time = (current_time.tv_sec - start_time.tv_sec) * 1e6 + (current_time.tv_usec - start_time.tv_usec);
 
 		if (elapsed_time >= usec)
-		{
 			break;
-		}
 
 		if (get_bool(&table->end_lock, &table->end_simulation) == true)
 		{
 			return 1;
 		}
 
-		sleep_time = 5000 - (elapsed_time % 5000);
-		usleep(sleep_time);
-
-		usec -= sleep_time;
+		usleep(1000);  // sleep for 1000 microseconds
 	}
 
 	return 0;
 }
+
+// int custom_usleep(t_table *table, useconds_t usec)
+// {
+// 	struct timeval start_time, current_time;
+// 	long elapsed_time, sleep_time;
+
+// 	gettimeofday(&start_time, NULL);
+
+// 	while (usec > 0)
+// 	{
+// 		gettimeofday(&current_time, NULL);
+// 		elapsed_time = (current_time.tv_sec - start_time.tv_sec) * 1e6 + (current_time.tv_usec - start_time.tv_usec);
+
+// 		if (elapsed_time >= usec)
+// 		{
+// 			break;
+// 		}
+
+// 		if (get_bool(&table->end_lock, &table->end_simulation) == true)
+// 		{
+// 			return 1;
+// 		}
+
+// 		sleep_time = 5000 - (elapsed_time % 5000);
+// 		usleep(sleep_time);
+
+// 		usec -= sleep_time;
+// 	}
+
+// 	return 0;
+// }

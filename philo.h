@@ -74,8 +74,9 @@ int						ft_atoi(const char *str);
 
 /* free.c */
 void					error_exit(int exit_code, char *message);
-void					free_array(void ***array, int n);
-void					free_both_arrays(t_table *table);
+void					free_forks(t_fork ***fork_array, int n, bool destroy_mutex);
+void					free_philos(t_philo ***philo_array, int n, bool destroy_mutex);
+void					free_table(t_table *table);
 
 /* start.c */
 void					start_threads(t_table *table);
@@ -93,7 +94,7 @@ void					wait_until_time(struct timeval start_time,
 							long wait_time);
 long					get_time_diff(struct timeval start_time);
 void					print_last_meal_time(t_philo *philo);
-int custom_usleep(t_table *table, useconds_t usec);
+int						custom_usleep(t_table *table, useconds_t usec);
 
 /* supervisor.c */
 void					*supervisor(void *data);
@@ -105,6 +106,5 @@ void					mutex_handle(pthread_mutex_t *mutex, int operation);
 int						philo_eat_even(t_philo *philo);
 int						philo_eat_odd(t_philo *philo);
 int						philo_think(t_philo *philo);
-
 
 #endif

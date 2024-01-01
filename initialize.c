@@ -14,7 +14,8 @@ t_philo	**create_philo_arr(t_table *table)
 		array[i] = (t_philo *)malloc(sizeof(t_philo));
 		if (!array[i])
 		{
-			free_array((void ***)&array, i);
+			// free_array((void ***)&array, i);
+			free_philos(&array, i, false);
 			return (NULL);
 		}
 		// printf("i = %d\n", i);
@@ -37,8 +38,10 @@ t_fork	**create_fork_arr(t_table *table)
 		array[i] = (t_fork *)malloc(sizeof(t_fork));
 		if (!array[i])
 		{
-			free_array((void ***)table->philo_array, i);
-			free_array((void ***)&array, i);
+			free_forks(&array, i, false);
+			free_philos(&table->philo_array, table->philo_count, false);
+			// free_array((void ***)table->philo_array, i);
+			// free_array((void ***)&array, i);
 			return (NULL);
 		}
 		i++;
