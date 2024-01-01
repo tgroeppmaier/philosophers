@@ -14,6 +14,21 @@ int unlock_forks(t_philo *philo, int ret)
 	return(ret);
 }
 
+int philo_think(t_philo *philo)
+{
+	long thinking_t;
+	
+	thinking_t = philo->table->time_to_eat * 2 - philo->table->time_to_sleep;
+	if(thinking_t < 0)
+		thinking_t = 0;
+	if(philo->table->philo_count % 2 != 0)
+	{
+		usleep(thinking_t);
+	}
+	// usleep(1000);
+		return(0);
+}
+
 int	philo_eat_even(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->left_fork->fork);
@@ -32,7 +47,8 @@ int	philo_eat_even(t_philo *philo)
 	if (check_end(philo->table))
 		return(unlock_forks(philo, 1));
 	print_status(philo, "is eating\n");
-	custom_usleep(philo->table, philo->table->time_to_eat);
+	usleep(philo->table->time_to_eat);
+	// custom_usleep(philo->table, philo->table->time_to_eat);
 	return(unlock_forks(philo, 0));
 }
 
@@ -47,23 +63,14 @@ int philo_eat_odd(t_philo *philo)
 	print_status(philo, "has taken right fork\n");
 	pthread_mutex_lock(&philo->left_fork->fork);
 	if (check_end(philo->table))
-	{
-		pthread_mutex_unlock(&philo->right_fork->fork);
-		pthread_mutex_unlock(&philo->left_fork->fork);
-		return (1);
-	}
-	set_long(&philo->lock, &philo->last_meal_time,
-			 get_time_diff(philo->table->start_time));
+		return(unlock_forks(philo, 1));
 	print_status(philo, "has taken left fork\n");
+	set_long(&philo->lock, &philo->last_meal_time,
+		get_time_diff(philo->table->start_time));
 	if (check_end(philo->table))
-	{
-		pthread_mutex_unlock(&philo->right_fork->fork);
-		pthread_mutex_unlock(&philo->left_fork->fork);
-		return (1);
-	}
+		return(unlock_forks(philo, 1));
 	print_status(philo, "is eating\n");
-	custom_usleep(philo->table, philo->table->time_to_eat);
-	pthread_mutex_unlock(&philo->right_fork->fork);
-	pthread_mutex_unlock(&philo->left_fork->fork);
-	return(0);
+	usleep(philo->table->time_to_eat);
+	// custom_usleep(philo->table, philo->table->time_to_eat);
+	return(unlock_forks(philo, 0));
 }

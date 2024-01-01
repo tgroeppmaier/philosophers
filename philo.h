@@ -104,5 +104,7 @@ void					mutex_handle(pthread_mutex_t *mutex, int operation);
 /* operations.c */
 int						philo_eat_even(t_philo *philo);
 int						philo_eat_odd(t_philo *philo);
+int						philo_think(t_philo *philo);
+
 
 #endif
