@@ -1,6 +1,6 @@
 #include "philo.h"
 
-void	check_philo_status(t_table *table, int i, long current_time,
+bool	check_philo_alive(t_table *table, int i, long current_time,
 		int *full_philos)
 {
 	long	last_meal;
@@ -21,8 +21,9 @@ void	check_philo_status(t_table *table, int i, long current_time,
 			get_time_diff(table->start_time), table->philo_array[i]->id);
 		pthread_mutex_unlock(&table->print_mutex);
 		set_bool(&table->end_lock, &table->end_simulation, true);
-		exit(1);
+		return(false);
 	}
+	return(true);
 }
 
 void	*supervisor(void *data)
@@ -40,7 +41,8 @@ void	*supervisor(void *data)
 		while (i < table->philo_count)
 		{
 			current_time = get_time_diff(table->start_time);
-			check_philo_status(table, i, current_time, &full_philos);
+			if(!check_philo_alive(table, i, current_time, &full_philos))
+				return (NULL);
 			i++;
 		}
 		if (full_philos == table->philo_count)
