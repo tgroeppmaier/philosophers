@@ -14,11 +14,9 @@ t_philo	**create_philo_arr(t_table *table)
 		array[i] = (t_philo *)malloc(sizeof(t_philo));
 		if (!array[i])
 		{
-			// free_array((void ***)&array, i);
 			free_philos(&array, i, false);
 			return (NULL);
 		}
-		// printf("i = %d\n", i);
 		i++;
 	}
 	return (array);
@@ -40,8 +38,6 @@ t_fork	**create_fork_arr(t_table *table)
 		{
 			free_forks(&array, i, false);
 			free_philos(&table->philo_array, table->philo_count, false);
-			// free_array((void ***)table->philo_array, i);
-			// free_array((void ***)&array, i);
 			return (NULL);
 		}
 		i++;
@@ -49,20 +45,42 @@ t_fork	**create_fork_arr(t_table *table)
 	return (array);
 }
 
-void	initialize_forks(t_table *table)
+bool	initialize_forks(t_table *table)
 {
 	int	i;
+	int err;
 
 	i = 0;
 	while (i < table->philo_count)
 	{
-		pthread_mutex_init(&table->fork_array[i]->fork, NULL);
+		err = pthread_mutex_init(&table->fork_array[i]->fork, NULL);
+		if (err != 0)
+		{
+			free_forks(&table->fork_array, i, false);
+			free_philos(&table->philo_array, table->philo_count, false);
+			return false;
+		}
 		table->fork_array[i]->fork_id = i + 1;
 		i++;
 	}
+	return(true);
 }
 
-void	initialize_table(int argc, char **argv, t_table *table)
+// bool	initialize_forks(t_table *table)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (i < table->philo_count)
+// 	{
+// 		pthread_mutex_init(&table->fork_array[i]->fork, NULL);
+// 		table->fork_array[i]->fork_id = i + 1;
+// 		i++;
+// 	}
+// 	return(true);
+// }
+
+bool	initialize_table(int argc, char **argv, t_table *table)
 {
 	int err;
 
@@ -78,16 +96,16 @@ void	initialize_table(int argc, char **argv, t_table *table)
 
 	err = pthread_mutex_init(&table->print_mutex, NULL);
 	if (err != 0)
-		error_exit(1, "Failed to initialize print_mutex\n");
+		return (error_exit(false, "Failed to initialize print_mutex\n"));
 	err = pthread_mutex_init(&table->end_lock, NULL);
 	if (err != 0)
-		error_exit(1, "Failed to initialize end_mutex\n");
-	
+		return(error_exit(false, "Failed to initialize end_mutex\n"));
+	return(true);
 }
 
 /* the left fork is his own (id) and the right fork is the id of the philo
 next in the array */
-void	initialize_philo(t_table *table)
+bool	initialize_philo(t_table *table)
 {
 	int	i;
 	int	right_fork;
@@ -106,20 +124,25 @@ void	initialize_philo(t_table *table)
 		table->philo_array[i]->last_meal_time = 0;
 		err = pthread_mutex_init(&table->philo_array[i]->lock, NULL);
 		if (err != 0)
-			error_exit(1, "Failed to initialize philo lock\n");
+			return(error_exit(false, "Failed to initialize philo lock\n"));
 		i++;
 	}
+	return(true);
 }
 
-void	initialize_data(int argc, char **argv, t_table *table)
+bool	initialize_data(int argc, char **argv, t_table *table)
 {
-	initialize_table(argc, argv, table);
+	if(!initialize_table(argc, argv, table))
+		return(false);
 	table->philo_array = create_philo_arr(table);
 	if (!table->philo_array)
-		error_exit(1, "malloc fail creation philo array\n");
+		return(error_exit(false, "malloc fail creation philo array\n"));
 	table->fork_array = create_fork_arr(table);
 	if (!table->fork_array)
-		error_exit(1, "malloc fail creation fork array\n");
-	initialize_forks(table);
-	initialize_philo(table);
+		return(error_exit(false, "malloc fail creation fork array\n"));
+	if(!initialize_forks(table))
+		return(false);
+	if(!initialize_philo(table))
+		return(false);
+	return(true);
 }

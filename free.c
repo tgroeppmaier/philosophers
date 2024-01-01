@@ -1,9 +1,9 @@
 #include "philo.h"
 
-void	error_exit(int exit_code, char *message)
+bool error_exit(bool ret, char *message)
 {
 	write(2, message, ft_strlen(message));
-	exit(exit_code);
+	return(ret);
 }
 
 void	free_forks(t_fork ***fork_array, int n, bool destroy_mutex)

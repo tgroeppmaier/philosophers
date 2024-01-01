@@ -63,23 +63,23 @@ typedef struct s_table
 }						t_table;
 
 /* check_input.c */
-void					check_input(int argc, char **argv);
+bool					check_input(int argc, char **argv);
 
 /* initialize.c */
-void					initialize_data(int argc, char **argv, t_table *table);
+bool					initialize_data(int argc, char **argv, t_table *table);
 
 /* libft.c */
 size_t					ft_strlen(const char *s);
 int						ft_atoi(const char *str);
 
 /* free.c */
-void					error_exit(int exit_code, char *message);
+bool					error_exit(bool ret, char *message);
 void					free_forks(t_fork ***fork_array, int n, bool destroy_mutex);
 void					free_philos(t_philo ***philo_array, int n, bool destroy_mutex);
 void					free_table(t_table *table);
 
 /* start.c */
-void					start_threads(t_table *table);
+bool					start_threads(t_table *table);
 void					print_status(t_philo *philo, char *status);
 
 /* getter_setter.c */

@@ -69,7 +69,7 @@ void	*philo_start(void *data)
 	return(NULL);
 }
 
-void	start_threads(t_table *table)
+bool	start_threads(t_table *table)
 {
 	int i;
 
@@ -83,7 +83,7 @@ void	start_threads(t_table *table)
 		{
 			free_table(table);
 			// free_both_arrays(table);
-			error_exit(1, "thread creation failed\n");
+			return(error_exit(false, "thread creation failed\n"));
 		}
 		i++;
 	}
@@ -94,6 +94,7 @@ void	start_threads(t_table *table)
     }
 	pthread_join(table->sup_thread_id, NULL);
 	print_status(table->philo_array[0], "end of simulatio\n");
+	return(true);
 }
 
 // void	philo_routine_even(t_philo *philo)
