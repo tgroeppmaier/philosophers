@@ -51,8 +51,7 @@ int	philo_eat_even(t_philo *philo)
 	if (check_end(philo->table))
 		return(unlock_forks(philo, 1));
 	print_status(philo, "is eating\n");
-	usleep(philo->table->time_to_eat);
-	// custom_usleep(philo->table, philo->table->time_to_eat);
+	custom_usleep(philo->table, philo->table->time_to_eat);
 	return(unlock_forks(philo, 0));
 }
 
@@ -74,7 +73,6 @@ int philo_eat_odd(t_philo *philo)
 	if (check_end(philo->table))
 		return(unlock_forks(philo, 1));
 	print_status(philo, "is eating\n");
-	usleep(philo->table->time_to_eat);
-	// custom_usleep(philo->table, philo->table->time_to_eat);
+	custom_usleep(philo->table, philo->table->time_to_eat);
 	return(unlock_forks(philo, 0));
 }

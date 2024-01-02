@@ -38,13 +38,11 @@ void	philo_routine(t_philo *philo, bool even)
 				break;
 		}
 		philo->meals_counter++;
-		// print_status_nbr(philo, "meals eaten:", philo->meals_counter);
 		if(philo->meals_counter == philo->table->max_meals)
 			break;
 		if(get_bool(&philo->table->end_lock, &philo->table->end_simulation) == true)
 			break;
 		print_status(philo, "is sleeping\n");
-		// usleep(philo->table->time_to_sleep);
 		custom_usleep(philo->table, philo->table->time_to_sleep);
 		philo_think(philo);
 	}
@@ -81,19 +79,18 @@ bool	start_threads(t_table *table)
 		if (pthread_create(&table->philo_array[i]->thread_id, NULL, philo_start,
 				table->philo_array[i]) != 0)
 		{
-			free_table(table);
-			// free_both_arrays(table);
+			free_table(table, true);
 			return(error_exit(false, "thread creation failed\n"));
 		}
 		i++;
 	}
 	pthread_create(&table->sup_thread_id, NULL, supervisor, table);
-	for (i = 0; i < table->philo_count; i++)
-    {
+	pthread_detach(table->sup_thread_id);
+	i = -1;
+	while (++i < table->philo_count)
         pthread_join(table->philo_array[i]->thread_id, NULL);
-    }
-	pthread_join(table->sup_thread_id, NULL);
-	print_status(table->philo_array[0], "end of simulatio\n");
+	// pthread_join(table->sup_thread_id, NULL);
+	print_status(table->philo_array[0], "end of simulation\n");
 	return(true);
 }
 

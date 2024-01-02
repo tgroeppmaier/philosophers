@@ -22,6 +22,12 @@ void	free_forks(t_fork ***fork_array, int n, bool destroy_mutex)
 	*fork_array = NULL;
 }
 
+void destroy_table_mtx(t_table *table)
+{
+	pthread_mutex_destroy(&table->end_lock);
+	pthread_mutex_destroy(&table->print_mutex);
+}
+
 void	free_philos(t_philo ***philo_array, int n, bool destroy_mutex)
 {
 	int i;
@@ -37,12 +43,15 @@ void	free_philos(t_philo ***philo_array, int n, bool destroy_mutex)
 	*philo_array = NULL;
 }
 
-void	free_table(t_table *table)
+void	free_table(t_table *table, bool destroy_mutex)
 {
-	free_forks(&table->fork_array, table->philo_count, true);
-	free_philos(&table->philo_array, table->philo_count, true);
-	pthread_mutex_destroy(&table->end_lock);
-	pthread_mutex_destroy(&table->print_mutex);
+	free_forks(&table->fork_array, table->philo_count, destroy_mutex);
+	free_philos(&table->philo_array, table->philo_count, destroy_mutex);
+	if (destroy_mutex)
+	{
+		pthread_mutex_destroy(&table->end_lock);
+		pthread_mutex_destroy(&table->print_mutex);
+	}
 }
 
 // void	free_both_arrays(t_table *table)

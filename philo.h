@@ -53,8 +53,9 @@ typedef struct s_table
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					max_meals;
-	struct timeval		start_time;
+	bool				even_philos;
 	bool				end_simulation;
+	struct timeval		start_time;
 	t_mtx				end_lock;
 	t_mtx				print_mutex;
 	pthread_t			sup_thread_id;
@@ -74,9 +75,12 @@ int						ft_atoi(const char *str);
 
 /* free.c */
 bool					error_exit(bool ret, char *message);
-void					free_forks(t_fork ***fork_array, int n, bool destroy_mutex);
-void					free_philos(t_philo ***philo_array, int n, bool destroy_mutex);
-void					free_table(t_table *table);
+void					free_forks(t_fork ***fork_array, int n,
+							bool destroy_mutex);
+void					free_philos(t_philo ***philo_array, int n,
+							bool destroy_mutex);
+void					free_table(t_table *table, bool destroy_mutex);
+void					destroy_table_mtx(t_table *table);
 
 /* start.c */
 bool					start_threads(t_table *table);
