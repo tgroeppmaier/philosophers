@@ -1,16 +1,21 @@
 # Philosophers
 
-
 - [Philosophers](#philosophers)
-		- [To do](#to-do)
-		- [Introduction](#introduction)
-		- [Functions](#functions)
-		- [Ending Threads and freeing rescources](#ending-threads-and-freeing-rescources)
-		- [Monitor thread vs monitoring state by each Tread](#monitor-thread-vs-monitoring-state-by-each-tread)
+    - [To do](#to-do)
+    - [General Notes](#general-notes)
+    - [Introduction](#introduction)
+    - [Atomic operations](#atomic-operations)
+    - [Functions](#functions)
+    - [Ending Threads and freeing rescources](#ending-threads-and-freeing-rescources)
+    - [Monitor thread vs monitoring state by each Tread](#monitor-thread-vs-monitoring-state-by-each-tread)
+    - [Difference between pthread\_detach and pthread\_join](#difference-between-pthread_detach-and-pthread_join)
 
 ### To do 
 - philos should not die, when they are full
 - 
+
+### General Notes
+- Be careful with `pthread_detach` function and be 100% sure that the detached Thread is not using any variables that might be altered by the main thread or that you use some form of synchronization. For example can the philosopher threads end and then the main thread free resources, which are still used by a still running detached thread.
 
 ### Introduction
 This project is about implementing concurrency.
@@ -24,6 +29,9 @@ Concurrency can lead to several problems. These arise from the fact, that the th
 
 2. Deadlocks
    A deadlock can occur when a thread is blocked by another thread. In our philospher program the forks are mutexes 
+
+### Atomic operations
+It is not enough, to check a value, for example if the simulation should end in a threadsafe manner, and then afterwards do some operation like eating or sleeping. This is because after we checked the value and before executing the action, the value can have changed. For this reason we need to perform the whole action within the locked mutex or mutexes if we need to check several values for our condition, like if the philosopher is still alive and the simulation should still run. Atomic operations are crucial to prevent race conditions.
 
 ### Functions
 Before we start, we should look at the Functions, we are allowed to use, so we can better plan the structure of our program.

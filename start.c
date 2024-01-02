@@ -43,8 +43,13 @@ void	philo_routine(t_philo *philo, bool even)
 		if (get_bool(&philo->table->end_lock, &philo->table->end_sim) == true)
 			break ;
 		pthread_mutex_lock(&philo->lock);
-		if(philo->alive && !get_bool(&philo->table->end_lock, &philo->table->end_sim))
-			print_status(philo, "is sleeping\n");
+		if(philo->alive)
+		{
+			pthread_mutex_lock(&philo->table->end_lock);
+			if(!philo->table->end_sim)
+				print_status(philo, "is sleeping\n");
+			pthread_mutex_unlock(&philo->table->end_lock);
+		}
 		pthread_mutex_unlock(&philo->lock);
 		custom_usleep(philo->table, philo->table->time_to_sleep);
 		if (!philo_think(philo))
