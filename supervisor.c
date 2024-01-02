@@ -16,17 +16,11 @@ bool	check_philo_alive(t_table *table, int i, long current_time,
 	{
 		pthread_mutex_lock(&table->philo_array[i]->lock);
 		pthread_mutex_lock(&table->end_lock);
-		pthread_mutex_lock(&table->print_mutex);
-		printf(RED "%ld ms: philo %ld died!!!!\n" RESET,
-			get_time_diff(table->start_time), table->philo_array[i]->id);
+		print_status(table->philo_array[i], "\033[31mdied\033[0m");
 		table->end_sim = true;
 		table->philo_array[i]->alive = false;
-		pthread_mutex_unlock(&table->print_mutex);
 		pthread_mutex_unlock(&table->end_lock);
 		pthread_mutex_unlock(&table->philo_array[i]->lock);
-
-		// set_bool(&table->end_lock, &table->end_sim, true);
-		// set_bool(&table->philo_array[i]->lock, &table->philo_array[i]->alive, false);
 		return (false);
 	}
 	return (true);

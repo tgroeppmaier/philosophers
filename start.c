@@ -25,8 +25,8 @@ void	philo_routine(t_philo *philo, bool even)
 	while (philo->meals_counter < philo->table->max_meals
 		|| philo->table->max_meals == -1)
 	{
-		if (get_bool(&philo->table->end_lock, &philo->table->end_sim) == true)
-			break ;
+		// if (get_bool(&philo->table->end_lock, &philo->table->end_sim) == true)
+		// 	break ;
 		if (even == true)
 		{
 			if (philo_eat_even(philo) == 1)
@@ -40,8 +40,8 @@ void	philo_routine(t_philo *philo, bool even)
 		philo->meals_counter++;
 		if (philo->meals_counter == philo->table->max_meals)
 			break ;
-		if (get_bool(&philo->table->end_lock, &philo->table->end_sim) == true)
-			break ;
+		// if (get_bool(&philo->table->end_lock, &philo->table->end_sim) == true)
+		// 	break ;
 		pthread_mutex_lock(&philo->lock);
 		if(philo->alive)
 		{
