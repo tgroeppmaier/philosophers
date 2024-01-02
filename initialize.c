@@ -12,7 +12,7 @@ bool	initialize_table(int argc, char **argv, t_table *table)
 		table->max_meals = -1;
 	else
 		table->max_meals = ft_atoi(argv[5]);
-	table->end_simulation = false;
+	table->end_sim = false;
 	table->even_philos = false;
 	if (table->philo_count % 2 == 0)
 		table->even_philos = true;

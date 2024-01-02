@@ -2,9 +2,11 @@
 
 void	wait_until_time(struct timeval start_time, long wait_time)
 {
-	struct timeval current_time;
+	struct timeval	current_time;
+	long			time_diff;
+
 	gettimeofday(&current_time, NULL);
-	long time_diff = (current_time.tv_sec * 1e6 + current_time.tv_usec)
+	time_diff = (current_time.tv_sec * 1e6 + current_time.tv_usec)
 		- (start_time.tv_sec * 1e6 + start_time.tv_usec);
 	if (time_diff < wait_time)
 	{
@@ -29,7 +31,8 @@ void	print_last_meal_time(t_philo *philo)
 
 	time_diff = get_time_diff(philo->table->start_time);
 	pthread_mutex_lock(&philo->table->print_mutex);
-	printf("%ld ms: %ld last meal time %ld\n\n", time_diff, philo->id, philo->last_meal_time);
+	printf("%ld ms: %ld last meal time %ld\n\n", time_diff, philo->id,
+		philo->last_meal_time);
 	pthread_mutex_unlock(&philo->table->print_mutex);
 }
 
@@ -38,7 +41,7 @@ void	print_last_meal_time(t_philo *philo)
 // 	while(usec > 5000)
 // 	{
 // 		usleep(4930);
-// 		if(get_bool(&table->end_lock, &table->end_simulation) == true)
+// 		if(get_bool(&table->end_lock, &table->end_sim) == true)
 // 			return(1);
 // 		usec -= 5000;
 // 	}
@@ -46,30 +49,24 @@ void	print_last_meal_time(t_philo *philo)
 // 	return(0);
 // }
 
-int custom_usleep(t_table *table, useconds_t usec)
+bool	custom_usleep(t_table *table, useconds_t usec)
 {
+	long	elapsed_time;
+
 	struct timeval start_time, current_time;
-	long elapsed_time;
-
 	gettimeofday(&start_time, NULL);
-
 	while (1)
 	{
 		gettimeofday(&current_time, NULL);
-		elapsed_time = (current_time.tv_sec - start_time.tv_sec) * 1e6 + (current_time.tv_usec - start_time.tv_usec);
-
+		elapsed_time = (current_time.tv_sec - start_time.tv_sec) * 1e6
+			+ (current_time.tv_usec - start_time.tv_usec);
 		if (elapsed_time >= usec)
-			break;
-
-		if (get_bool(&table->end_lock, &table->end_simulation) == true)
-		{
-			return 1;
-		}
-
-		usleep(1000);  // sleep for 1000 microseconds
+			break ;
+		if (get_bool(&table->end_lock, &table->end_sim) == true)
+			return (false);
+		usleep(1000); // sleep for 1000 microseconds
 	}
-
-	return 0;
+	return (true);
 }
 
 // int custom_usleep(t_table *table, useconds_t usec)
@@ -82,16 +79,17 @@ int custom_usleep(t_table *table, useconds_t usec)
 // 	while (usec > 0)
 // 	{
 // 		gettimeofday(&current_time, NULL);
-// 		elapsed_time = (current_time.tv_sec - start_time.tv_sec) * 1e6 + (current_time.tv_usec - start_time.tv_usec);
+// 		elapsed_time = (current_time.tv_sec - start_time.tv_sec) * 1e6
+			// + (current_time.tv_usec - start_time.tv_usec);
 
 // 		if (elapsed_time >= usec)
 // 		{
-// 			break;
+// 			break ;
 // 		}
 
-// 		if (get_bool(&table->end_lock, &table->end_simulation) == true)
+// 		if (get_bool(&table->end_lock, &table->end_sim) == true)
 // 		{
-// 			return 1;
+// 			return (1);
 // 		}
 
 // 		sleep_time = 5000 - (elapsed_time % 5000);
@@ -100,5 +98,5 @@ int custom_usleep(t_table *table, useconds_t usec)
 // 		usec -= sleep_time;
 // 	}
 
-// 	return 0;
+// 	return (0);
 // }

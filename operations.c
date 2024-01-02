@@ -2,7 +2,7 @@
 
 bool	check_end(t_table *table)
 {
-	if (get_bool(&table->end_lock, &table->end_simulation) == true)
+	if (get_bool(&table->end_lock, &table->end_sim) == true)
 		return (true);
 	return (false);
 }
@@ -14,7 +14,7 @@ int unlock_forks(t_philo *philo, int ret)
 	return(ret);
 }
 
-int philo_think(t_philo *philo)
+bool philo_think(t_philo *philo)
 {
 	long thinking_t;
 	
@@ -23,14 +23,14 @@ int philo_think(t_philo *philo)
 		thinking_t = 0;
 	if (check_end(philo->table))
 		return(1);
-	print_status(philo, "is thinking\n");
+	pthread_mutex_lock(&philo->table->end_lock);
+	if(!philo->table->end_sim)
+		print_status(philo, "is thinking\n");
+	pthread_mutex_unlock(&philo->table->end_lock);
 	if(philo->table->philo_count % 2 != 0)
-	{
-		custom_usleep(philo->table, thinking_t);
-		// usleep(thinking_t);
-	}
-	// usleep(1000);
-		return(0);
+		if(!custom_usleep(philo->table, thinking_t))
+			return(false);
+	return(true);
 }
 
 int	philo_eat_even(t_philo *philo)
@@ -51,7 +51,8 @@ int	philo_eat_even(t_philo *philo)
 	if (check_end(philo->table))
 		return(unlock_forks(philo, 1));
 	print_status(philo, "is eating\n");
-	custom_usleep(philo->table, philo->table->time_to_eat);
+	if(!custom_usleep(philo->table, philo->table->time_to_eat))
+		return(unlock_forks(philo, 1));
 	return(unlock_forks(philo, 0));
 }
 
@@ -73,6 +74,7 @@ int philo_eat_odd(t_philo *philo)
 	if (check_end(philo->table))
 		return(unlock_forks(philo, 1));
 	print_status(philo, "is eating\n");
-	custom_usleep(philo->table, philo->table->time_to_eat);
+	if(!custom_usleep(philo->table, philo->table->time_to_eat))
+		return(unlock_forks(philo, 1));
 	return(unlock_forks(philo, 0));
 }

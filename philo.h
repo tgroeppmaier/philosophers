@@ -54,7 +54,7 @@ typedef struct s_table
 	int					time_to_sleep;
 	int					max_meals;
 	bool				even_philos;
-	bool				end_simulation;
+	bool				end_sim;
 	struct timeval		start_time;
 	t_mtx				end_lock;
 	t_mtx				print_mutex;
@@ -98,7 +98,7 @@ void					wait_until_time(struct timeval start_time,
 							long wait_time);
 long					get_time_diff(struct timeval start_time);
 void					print_last_meal_time(t_philo *philo);
-int						custom_usleep(t_table *table, useconds_t usec);
+bool					custom_usleep(t_table *table, useconds_t usec);
 
 /* supervisor.c */
 void					*supervisor(void *data);
@@ -109,6 +109,6 @@ void					mutex_handle(pthread_mutex_t *mutex, int operation);
 /* operations.c */
 int						philo_eat_even(t_philo *philo);
 int						philo_eat_odd(t_philo *philo);
-int						philo_think(t_philo *philo);
+bool					philo_think(t_philo *philo);
 
 #endif
