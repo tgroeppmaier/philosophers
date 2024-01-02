@@ -50,7 +50,10 @@ int	philo_eat_even(t_philo *philo)
 	print_status(philo, "has taken right fork\n");
 	if (check_end(philo->table))
 		return(unlock_forks(philo, 1));
-	print_status(philo, "is eating\n");
+	pthread_mutex_lock(&philo->lock);
+	if(philo->alive)
+		print_status(philo, "is eating\n");
+	pthread_mutex_unlock(&philo->lock);
 	if(!custom_usleep(philo->table, philo->table->time_to_eat))
 		return(unlock_forks(philo, 1));
 	return(unlock_forks(philo, 0));
@@ -73,7 +76,10 @@ int philo_eat_odd(t_philo *philo)
 		get_time_diff(philo->table->start_time));
 	if (check_end(philo->table))
 		return(unlock_forks(philo, 1));
-	print_status(philo, "is eating\n");
+	pthread_mutex_lock(&philo->lock);
+	if(philo->alive)
+		print_status(philo, "is eating\n");
+	pthread_mutex_unlock(&philo->lock);
 	if(!custom_usleep(philo->table, philo->table->time_to_eat))
 		return(unlock_forks(philo, 1));
 	return(unlock_forks(philo, 0));

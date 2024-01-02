@@ -19,6 +19,7 @@ bool	check_philo_alive(t_table *table, int i, long current_time,
 			get_time_diff(table->start_time), table->philo_array[i]->id);
 		pthread_mutex_unlock(&table->print_mutex);
 		set_bool(&table->end_lock, &table->end_sim, true);
+		set_bool(&table->philo_array[i]->lock, &table->philo_array[i]->alive, false);
 		return (false);
 	}
 	return (true);

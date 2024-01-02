@@ -64,7 +64,7 @@ bool	custom_usleep(t_table *table, useconds_t usec)
 			break ;
 		if (get_bool(&table->end_lock, &table->end_sim) == true)
 			return (false);
-		usleep(1000); // sleep for 1000 microseconds
+		usleep(500); // sleep for 1000 microseconds
 	}
 	return (true);
 }
@@ -80,7 +80,7 @@ bool	custom_usleep(t_table *table, useconds_t usec)
 // 	{
 // 		gettimeofday(&current_time, NULL);
 // 		elapsed_time = (current_time.tv_sec - start_time.tv_sec) * 1e6
-			// + (current_time.tv_usec - start_time.tv_usec);
+// + (current_time.tv_usec - start_time.tv_usec);
 
 // 		if (elapsed_time >= usec)
 // 		{

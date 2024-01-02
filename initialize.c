@@ -114,6 +114,7 @@ bool	initialize_philo(t_table *table)
 		table->philo_array[i]->right_fork = table->fork_array[right_fork];
 		table->philo_array[i]->meals_counter = 0;
 		table->philo_array[i]->last_meal_time = 0;
+		table->philo_array[i]->alive = true;
 		err = pthread_mutex_init(&table->philo_array[i]->lock, NULL);
 		if (err != 0)
 		{

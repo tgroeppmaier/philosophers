@@ -42,7 +42,10 @@ void	philo_routine(t_philo *philo, bool even)
 			break ;
 		if (get_bool(&philo->table->end_lock, &philo->table->end_sim) == true)
 			break ;
-		print_status(philo, "is sleeping\n");
+		pthread_mutex_lock(&philo->lock);
+		if (philo->alive)
+			print_status(philo, "is sleeping\n");
+		pthread_mutex_unlock(&philo->lock);
 		custom_usleep(philo->table, philo->table->time_to_sleep);
 		if (!philo_think(philo))
 			break ;
@@ -84,11 +87,11 @@ bool	start_threads(t_table *table)
 		i++;
 	}
 	pthread_create(&table->sup_thread_id, NULL, supervisor, table);
-	pthread_detach(table->sup_thread_id);
+	// pthread_detach(table->sup_thread_id);
 	i = -1;
 	while (++i < table->philo_count)
 		pthread_join(table->philo_array[i]->thread_id, NULL);
-	// pthread_join(table->sup_thread_id, NULL);
+	pthread_join(table->sup_thread_id, NULL);
 	print_status(table->philo_array[0], "end of simulation\n");
 	return (true);
 }
