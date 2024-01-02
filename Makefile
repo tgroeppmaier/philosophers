@@ -11,6 +11,7 @@ HEADER = philo.h
 
 all: $(NAME)
 
+tsan: fclean 
 tsan: CFLAGS += $(TSANFLAGS)
 tsan: $(NAME)
 
