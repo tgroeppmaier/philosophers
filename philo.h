@@ -75,9 +75,9 @@ size_t					ft_strlen(const char *s);
 int						ft_atoi(const char *str);
 
 /* print.c */
-void print_atomic(t_philo *philo, char *message);
-void	print_last_meal_time(t_philo *philo);
-void	print_status(t_philo *philo, char *status);
+void					print_atomic(t_philo *philo, char *message);
+void					print_last_meal_time(t_philo *philo);
+void					print_status(t_philo *philo, char *status);
 
 /* free.c */
 bool					error_exit(bool ret, char *message);
@@ -113,8 +113,8 @@ void					*supervisor(void *data);
 void					mutex_handle(pthread_mutex_t *mutex, int operation);
 
 /* operations.c */
-int						philo_eat_even(t_philo *philo);
-int						philo_eat_odd(t_philo *philo);
+bool					philo_eat_even(t_philo *philo);
+bool					philo_eat_odd(t_philo *philo);
 bool					philo_think(t_philo *philo);
 
 #endif

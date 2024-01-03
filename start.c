@@ -2,7 +2,7 @@
 
 void	philo_routine(t_philo *philo, bool even)
 {
-	bool (*philo_eat)(t_philo *);
+	bool	(*philo_eat)(t_philo *);
 
 	if (even)
 		philo_eat = philo_eat_even;
@@ -11,7 +11,7 @@ void	philo_routine(t_philo *philo, bool even)
 	while (philo->meals_counter < philo->table->max_meals
 		|| philo->table->max_meals == -1)
 	{
-		if (philo_eat(philo) == 1)
+		if (philo_eat(philo) == false)
 			break ;
 		philo->meals_counter++;
 		print_atomic(philo, "is sleeping\n");
