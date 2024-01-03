@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra -Werror -g -pthread
 TSANFLAGS = -fsanitize=thread
 NAME = philo
 SRC = main.c check_input.c initialize.c libft.c free.c start.c getter_setter.c \
-time.c supervisor.c mutex_handle.c operations.c
+time.c supervisor.c mutex_handle.c operations.c print.c
 OBJ = $(SRC:.c=.o)
 HEADER = philo.h
 

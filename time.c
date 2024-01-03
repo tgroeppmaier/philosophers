@@ -1,5 +1,6 @@
 #include "philo.h"
 
+// not needed any more
 void	wait_until_time(struct timeval start_time, long wait_time)
 {
 	struct timeval	current_time;
@@ -9,10 +10,11 @@ void	wait_until_time(struct timeval start_time, long wait_time)
 	time_diff = (current_time.tv_sec * 1e6 + current_time.tv_usec)
 		- (start_time.tv_sec * 1e6 + start_time.tv_usec);
 	if (time_diff < wait_time)
-	{
 		usleep(wait_time - time_diff);
-	}
 }
+
+/* takes the start time and returns the time
+difference since start in ms */
 
 long	get_time_diff(struct timeval start_time)
 {
@@ -25,35 +27,15 @@ long	get_time_diff(struct timeval start_time)
 	return (time_diff);
 }
 
-void	print_last_meal_time(t_philo *philo)
-{
-	long	time_diff;
-
-	time_diff = get_time_diff(philo->table->start_time);
-	pthread_mutex_lock(&philo->table->print_mutex);
-	printf("%ld ms: %ld last meal time %ld\n\n", time_diff, philo->id,
-		philo->last_meal_time);
-	pthread_mutex_unlock(&philo->table->print_mutex);
-}
-
-// int custom_usleep(t_table *table, useconds_t usec)
-// {
-// 	while(usec > 5000)
-// 	{
-// 		usleep(4930);
-// 		if(get_bool(&table->end_lock, &table->end_sim) == true)
-// 			return(1);
-// 		usec -= 5000;
-// 	}
-// 	usleep(usec);
-// 	return(0);
-// }
+/* sleeps and checks every 500 us if it already slept long enough and if the
+simulation should end */
 
 bool	custom_usleep(t_table *table, useconds_t usec)
 {
-	long	elapsed_time;
+	long			elapsed_time;
+	struct timeval	start_time;
+	struct timeval	current_time;
 
-	struct timeval start_time, current_time;
 	gettimeofday(&start_time, NULL);
 	while (1)
 	{
@@ -64,39 +46,7 @@ bool	custom_usleep(t_table *table, useconds_t usec)
 			break ;
 		if (get_bool(&table->end_lock, &table->end_sim) == true)
 			return (false);
-		usleep(500); // sleep for 1000 microseconds
+		usleep(500);
 	}
 	return (true);
 }
-
-// int custom_usleep(t_table *table, useconds_t usec)
-// {
-// 	struct timeval start_time, current_time;
-// 	long elapsed_time, sleep_time;
-
-// 	gettimeofday(&start_time, NULL);
-
-// 	while (usec > 0)
-// 	{
-// 		gettimeofday(&current_time, NULL);
-// 		elapsed_time = (current_time.tv_sec - start_time.tv_sec) * 1e6
-// + (current_time.tv_usec - start_time.tv_usec);
-
-// 		if (elapsed_time >= usec)
-// 		{
-// 			break ;
-// 		}
-
-// 		if (get_bool(&table->end_lock, &table->end_sim) == true)
-// 		{
-// 			return (1);
-// 		}
-
-// 		sleep_time = 5000 - (elapsed_time % 5000);
-// 		usleep(sleep_time);
-
-// 		usec -= sleep_time;
-// 	}
-
-// 	return (0);
-// }

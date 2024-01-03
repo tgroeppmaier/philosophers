@@ -74,6 +74,11 @@ bool					initialize_data(int argc, char **argv, t_table *table);
 size_t					ft_strlen(const char *s);
 int						ft_atoi(const char *str);
 
+/* print.c */
+void print_atomic(t_philo *philo, char *message);
+void	print_last_meal_time(t_philo *philo);
+void	print_status(t_philo *philo, char *status);
+
 /* free.c */
 bool					error_exit(bool ret, char *message);
 void					free_forks(t_fork ***fork_array, int n,

@@ -4,7 +4,10 @@
     - [To do](#to-do)
     - [General Notes](#general-notes)
     - [Introduction](#introduction)
+      - [Data races](#data-races)
+      - [Mutexes](#mutexes)
     - [Atomic operations](#atomic-operations)
+    - [Destroying mutexes](#destroying-mutexes)
     - [Functions](#functions)
     - [Ending Threads and freeing rescources](#ending-threads-and-freeing-rescources)
     - [Monitor thread vs monitoring state by each Tread](#monitor-thread-vs-monitoring-state-by-each-tread)
@@ -20,18 +23,24 @@
 ### Introduction
 This project is about implementing concurrency.
 Concurrency can lead to several problems. These arise from the fact, that the threads run paralell and we dont know, which thread is being executed first. This is managed by the operation system.
-1. Data races
-   A data race occurs, when two or more threads are accessing the same variable in a not thread safe manner and at least one of the threads is perfoming a write operation. This can lead to inaccurate or completely messed up values, since the variable can be in the writing process while its being read.
-   To avoid this, we need some way of synchronizing the threads for certain parts of our program (the read and write parts). 
-   For this we use mutexes. Mutex stands for mutual exclusion.
-   Lets say, we have one thread, that writes into a shared variable and another thread that reads this variable.
-   Before a thread can read or write, it needs to aquire (lock) the mutex. A mutex can only be locked by one thread. Another thread, that is trying to lock the same mutex will be blocked until it can lock the mutex. 
 
-2. Deadlocks
+#### Data races
+A data race occurs, when two or more threads are accessing the same variable in a not thread safe manner and at least one of the threads is perfoming a write operation. This can lead to inaccurate or completely messed up values, since the variable can be in the writing process while its being read.
+To avoid this, we need some way of synchronizing the threads for critical parts of our program (the read and write parts) like mutexes or semaphores.
+A data race occurs when two or more threads access the same memory location concurrently, and at least one of the accesses is for writing, and the threads are not using any mechanism to synchronize their accesses to that memory. This can lead to inconsistent and unpredictable results. Mutexes help us avoid this problem by ensuring that only one thread can access the shared data at a time.
+
+#### Mutexes
+To avoid data races, we need we use mutexes. Mutex stands for mutual exclusion.
+Lets say, we have one thread, that writes into a shared variable and another thread that reads this variable.
+Before a thread can read or write, it needs to aquire (lock) the mutex. A mutex can only be locked by one thread. Another thread, that is trying to lock the same mutex will be blocked until it can lock the mutex. 
+
+1. Deadlocks
    A deadlock can occur when a thread is blocked by another thread. In our philospher program the forks are mutexes 
 
 ### Atomic operations
 It is not enough, to check a value, for example if the simulation should end in a threadsafe manner, and then afterwards do some operation like eating or sleeping. This is because after we checked the value and before executing the action, the value can have changed. For this reason we need to perform the whole action within the locked mutex or mutexes if we need to check several values for our condition, like if the philosopher is still alive and the simulation should still run. Atomic operations are crucial to prevent race conditions.
+
+### Destroying mutexes
 
 ### Functions
 Before we start, we should look at the Functions, we are allowed to use, so we can better plan the structure of our program.
