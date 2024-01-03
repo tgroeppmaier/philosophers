@@ -34,6 +34,7 @@ void	*supervisor(void *data)
 	t_table	*table;
 
 	table = (t_table *)data;
+	wait_until_time(table->start_time, 10000);
 	while (get_bool(&table->end_lock, &table->end_sim) != true)
 	{
 		i = 0;

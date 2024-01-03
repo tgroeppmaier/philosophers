@@ -28,13 +28,22 @@ void	*philo_start(void *data)
 	t_philo	*philo;
 	bool	even;
 
-	even = false;
 	philo = (t_philo *)data;
-	if (philo->id % 2 == 0)
-		even = true;
-	if (philo->id % 2 != 0)
-		usleep(philo->table->time_to_eat / 2);
-	philo_routine(philo, even);
+	// wait_until_time(philo->table->start_time, 10000);
+	if (philo->table->philo_count == 1)
+	{
+		print_status(philo, "has taken a fork\n");
+		custom_usleep(philo->table, philo->table->time_to_die);
+	}
+	else
+	{
+		even = false;
+		if (philo->id % 2 == 0)
+			even = true;
+		if (philo->id % 2 != 0)
+			usleep(philo->table->time_to_eat / 2);
+		philo_routine(philo, even);
+	}
 	return (NULL);
 }
 
