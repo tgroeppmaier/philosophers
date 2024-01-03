@@ -2,36 +2,21 @@
 
 void	philo_routine(t_philo *philo, bool even)
 {
+	bool (*philo_eat)(t_philo *);
+
+	if (even)
+		philo_eat = philo_eat_even;
+	else
+		philo_eat = philo_eat_odd;
 	while (philo->meals_counter < philo->table->max_meals
 		|| philo->table->max_meals == -1)
 	{
-		// if (get_bool(&philo->table->end_lock, &philo->table->end_sim) == true)
-		// 	break ;
-		if (even == true)
-		{
-			if (philo_eat_even(philo) == 1)
-				break ;
-		}
-		else
-		{
-			if (philo_eat_odd(philo) == 1)
-				break ;
-		}
-		philo->meals_counter++;
-		if (philo->meals_counter == philo->table->max_meals)
+		if (philo_eat(philo) == 1)
 			break ;
-		// if (get_bool(&philo->table->end_lock, &philo->table->end_sim) == true)
-		// 	break ;
-		pthread_mutex_lock(&philo->lock);
-		if(philo->alive)
-		{
-			pthread_mutex_lock(&philo->table->end_lock);
-			if(!philo->table->end_sim)
-				print_status(philo, "is sleeping\n");
-			pthread_mutex_unlock(&philo->table->end_lock);
-		}
-		pthread_mutex_unlock(&philo->lock);
-		custom_usleep(philo->table, philo->table->time_to_sleep);
+		philo->meals_counter++;
+		print_atomic(philo, "is sleeping\n");
+		if (!custom_usleep(philo->table, philo->table->time_to_sleep))
+			break ;
 		if (!philo_think(philo))
 			break ;
 	}
