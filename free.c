@@ -1,20 +1,19 @@
 #include "philo.h"
 
-bool error_exit(bool ret, char *message)
+bool	error_exit(bool ret, char *message)
 {
 	write(2, message, ft_strlen(message));
-	return(ret);
+	return (ret);
 }
 
 void	free_forks(t_fork ***fork_array, int n, bool destroy_mutex)
 {
-	int i;
+	int	i;
 
 	i = -1;
-	while(++i < n)
+	while (++i < n)
 	{
-		// mutex_handle((*fork_array)[i]->fork, DESTROY);
-		if(destroy_mutex)
+		if (destroy_mutex)
 			pthread_mutex_destroy(&(*fork_array)[i]->fork);
 		free((*fork_array)[i]);
 	}
@@ -22,7 +21,7 @@ void	free_forks(t_fork ***fork_array, int n, bool destroy_mutex)
 	*fork_array = NULL;
 }
 
-void destroy_table_mtx(t_table *table)
+void	destroy_table_mtx(t_table *table)
 {
 	pthread_mutex_destroy(&table->end_lock);
 	pthread_mutex_destroy(&table->print_mutex);
@@ -30,12 +29,12 @@ void destroy_table_mtx(t_table *table)
 
 void	free_philos(t_philo ***philo_array, int n, bool destroy_mutex)
 {
-	int i;
+	int	i;
 
 	i = -1;
-	while(++i < n)
+	while (++i < n)
 	{
-		if(destroy_mutex)
+		if (destroy_mutex)
 			pthread_mutex_destroy(&(*philo_array)[i]->lock);
 		free((*philo_array)[i]);
 	}
@@ -53,7 +52,3 @@ void	free_table(t_table *table, bool destroy_mutex)
 		pthread_mutex_destroy(&table->print_mutex);
 	}
 }
-
-// void	free_both_arrays(t_table *table)
-// {
-// }

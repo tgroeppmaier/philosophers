@@ -1,5 +1,37 @@
 #include "philo.h"
 
+size_t	ft_strlen(const char *s)
+{
+	const char	*p;
+
+	p = s;
+	while (*p)
+		++p;
+	return (p - s);
+}
+
+int	ft_atoi(const char *str)
+{
+	int	c;
+	int	sign;
+
+	c = 0;
+	sign = 1;
+	while (*str == ' ' || *str == '\t' || *str == '\n' || *str == '\r'
+		|| *str == '\v' || *str == '\f')
+		str++;
+	if (*str == '-')
+		sign = -1;
+	if (*str == '+' || *str == '-')
+		str++;
+	while (*str >= '0' && *str <= '9')
+	{
+		c = c * 10 + (*str - '0');
+		str++;
+	}
+	return (c * sign);
+}
+
 void	print_status(t_philo *philo, char *status)
 {
 	long	time_diff;
@@ -9,16 +41,6 @@ void	print_status(t_philo *philo, char *status)
 	printf("%ld ms: %ld %s\n", time_diff, philo->id, status);
 	pthread_mutex_unlock(&philo->table->print_mutex);
 }
-
-// void	print_status_nbr(t_philo *philo, char *status, long nbr)
-// {
-// 	long	time_diff;
-
-// 	time_diff = get_time_diff(philo->table->start_time);
-// 	pthread_mutex_lock(&philo->table->print_mutex);
-// 	printf("%ld ms: %ld %s %ld\n", time_diff, philo->id, status, nbr);
-// 	pthread_mutex_unlock(&philo->table->print_mutex);
-// }
 
 void	print_last_meal_time(t_philo *philo)
 {

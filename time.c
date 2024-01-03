@@ -1,6 +1,6 @@
 #include "philo.h"
 
-// not needed any more
+// not needed anymore
 void	wait_until_time(struct timeval start_time, long wait_time)
 {
 	struct timeval	current_time;

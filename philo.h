@@ -68,13 +68,11 @@ typedef struct s_table
 bool					check_input(int argc, char **argv);
 
 /* initialize.c */
-bool					initialize_data(int argc, char **argv, t_table *table);
+bool					initialize_data(t_table *table);
 
-/* libft.c */
+/* utils.c */
 size_t					ft_strlen(const char *s);
 int						ft_atoi(const char *str);
-
-/* print.c */
 void					print_atomic(t_philo *philo, char *message);
 void					print_last_meal_time(t_philo *philo);
 void					print_status(t_philo *philo, char *status);
@@ -99,7 +97,6 @@ bool					get_bool(t_mtx *lock, bool *value);
 void					set_bool(t_mtx *lock, bool *old, bool new);
 
 /* time. */
-
 void					wait_until_time(struct timeval start_time,
 							long wait_time);
 long					get_time_diff(struct timeval start_time);

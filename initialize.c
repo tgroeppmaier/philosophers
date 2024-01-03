@@ -1,30 +1,5 @@
 #include "philo.h"
 
-bool	initialize_table(int argc, char **argv, t_table *table)
-{
-	int	err;
-
-	table->philo_count = ft_atoi(argv[1]);
-	table->time_to_die = ft_atoi(argv[2]);
-	table->time_to_eat = ft_atoi(argv[3]) * 1e3;
-	table->time_to_sleep = ft_atoi(argv[4]) * 1e3;
-	if (argc == 5)
-		table->max_meals = -1;
-	else
-		table->max_meals = ft_atoi(argv[5]);
-	table->end_sim = false;
-	table->even_philos = false;
-	if (table->philo_count % 2 == 0)
-		table->even_philos = true;
-	err = pthread_mutex_init(&table->print_mutex, NULL);
-	if (err != 0)
-		return (error_exit(false, "Failed to initialize print_mutex\n"));
-	err = pthread_mutex_init(&table->end_lock, NULL);
-	if (err != 0)
-		return (error_exit(false, "Failed to initialize end_mutex\n"));
-	return (true);
-}
-
 t_philo	**create_philo_arr(t_table *table)
 {
 	t_philo	**array;
@@ -101,10 +76,9 @@ bool	initialize_philo(t_table *table)
 {
 	int	i;
 	int	right_fork;
-	int	err;
 
-	i = 0;
-	while (i < table->philo_count)
+	i = -1;
+	while (++i < table->philo_count)
 	{
 		right_fork = (i + 1) % table->philo_count;
 		table->philo_array[i]->id = i + 1;
@@ -115,23 +89,19 @@ bool	initialize_philo(t_table *table)
 		table->philo_array[i]->meals_counter = 0;
 		table->philo_array[i]->last_meal_time = 0;
 		table->philo_array[i]->alive = true;
-		err = pthread_mutex_init(&table->philo_array[i]->lock, NULL);
-		if (err != 0)
+		if (pthread_mutex_init(&table->philo_array[i]->lock, NULL) != 0)
 		{
 			free_forks(&table->fork_array, i, false);
 			free_philos(&table->philo_array, table->philo_count, false);
 			destroy_table_mtx(table);
 			return (error_exit(false, "Failed to initialize philo lock\n"));
 		}
-		i++;
 	}
 	return (true);
 }
 
-bool	initialize_data(int argc, char **argv, t_table *table)
+bool	initialize_data(t_table *table)
 {
-	if (!initialize_table(argc, argv, table))
-		return (false);
 	table->philo_array = create_philo_arr(table);
 	if (!table->philo_array)
 		return (error_exit(false, "malloc fail creation philo array\n"));
