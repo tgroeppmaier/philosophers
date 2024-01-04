@@ -29,7 +29,6 @@ void	*philo_start(void *data)
 	bool	even;
 
 	philo = (t_philo *)data;
-	// wait_until_time(philo->table->start_time, 10000);
 	if (philo->table->philo_count == 1)
 	{
 		print_status(philo, "has taken a fork\n");

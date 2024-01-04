@@ -1,18 +1,5 @@
 #include "philo.h"
 
-// not needed anymore
-void	wait_until_time(struct timeval start_time, long wait_time)
-{
-	struct timeval	current_time;
-	long			time_diff;
-
-	gettimeofday(&current_time, NULL);
-	time_diff = (current_time.tv_sec * 1e6 + current_time.tv_usec)
-		- (start_time.tv_sec * 1e6 + start_time.tv_usec);
-	if (time_diff < wait_time)
-		usleep(wait_time - time_diff);
-}
-
 /* takes the start time and returns the time
 difference since start in ms */
 

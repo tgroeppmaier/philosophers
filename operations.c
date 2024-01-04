@@ -38,13 +38,13 @@ bool	philo_eat_even(t_philo *philo)
 		pthread_mutex_unlock(&philo->left_fork->fork);
 		return (1);
 	}
-	print_atomic(philo, "has taken left fork\n");
+	print_atomic(philo, "has taken a fork\n");
 	pthread_mutex_lock(&philo->right_fork->fork);
 	if (check_end(philo->table))
 		return (unlock_forks(philo, false));
 	set_long(&philo->lock, &philo->last_meal_time,
 		get_time_diff(philo->table->start_time));
-	print_atomic(philo, "has taken right fork\n");
+	print_atomic(philo, "has taken a fork\n");
 	if (check_end(philo->table))
 		return (unlock_forks(philo, false));
 	print_atomic(philo, "is eating\n");
@@ -61,11 +61,11 @@ bool	philo_eat_odd(t_philo *philo)
 		pthread_mutex_unlock(&philo->right_fork->fork);
 		return (1);
 	}
-	print_atomic(philo, "has taken right fork\n");
+	print_atomic(philo, "has taken a fork\n");
 	pthread_mutex_lock(&philo->left_fork->fork);
 	if (check_end(philo->table))
 		return (unlock_forks(philo, false));
-	print_atomic(philo, "has taken left fork\n");
+	print_atomic(philo, "has taken  a fork\n");
 	set_long(&philo->lock, &philo->last_meal_time,
 		get_time_diff(philo->table->start_time));
 	if (check_end(philo->table))

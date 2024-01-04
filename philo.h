@@ -1,7 +1,6 @@
 #ifndef PHILO_H
 # define PHILO_H
 
-// #define BUFFER_SIZE 1000
 # include <limits.h>
 # include <pthread.h>
 # include <stdbool.h>
@@ -12,17 +11,6 @@
 
 # define RESET "\033[0m"
 # define RED "\033[31m"
-# define GREEN "\033[32m"
-# define YELLOW "\033[33m"
-# define BLUE "\033[34m"
-# define MAGENTA "\033[35m"
-# define CYAN "\033[36m"
-# define WHITE "\033[37m"
-
-# define INIT 0
-# define LOCK 1
-# define UNLOCK 2
-# define DESTROY 3
 
 typedef pthread_mutex_t	t_mtx;
 typedef struct s_table	t_table;
@@ -88,7 +76,6 @@ void					destroy_table_mtx(t_table *table);
 
 /* start.c */
 bool					start_threads(t_table *table);
-void					print_status(t_philo *philo, char *status);
 
 /* getter_setter.c */
 long					get_long(t_mtx *lock, long *value);
@@ -97,17 +84,11 @@ bool					get_bool(t_mtx *lock, bool *value);
 void					set_bool(t_mtx *lock, bool *old, bool new);
 
 /* time. */
-void					wait_until_time(struct timeval start_time,
-							long wait_time);
 long					get_time_diff(struct timeval start_time);
-void					print_last_meal_time(t_philo *philo);
 bool					custom_usleep(t_table *table, useconds_t usec);
 
 /* supervisor.c */
 void					*supervisor(void *data);
-
-/* mutex_handler.c */
-void					mutex_handle(pthread_mutex_t *mutex, int operation);
 
 /* operations.c */
 bool					philo_eat_even(t_philo *philo);
