@@ -10,6 +10,7 @@
     - [Destroying mutexes](#destroying-mutexes)
     - [Functions](#functions)
     - [Ending Threads and freeing rescources](#ending-threads-and-freeing-rescources)
+    - [Steps of the program](#steps-of-the-program)
     - [Monitor thread vs monitoring state by each Tread](#monitor-thread-vs-monitoring-state-by-each-tread)
     - [Difference between pthread\_detach and pthread\_join](#difference-between-pthread_detach-and-pthread_join)
 
@@ -119,6 +120,10 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex);
 Initialization of mutexes allocates Memory dynamically.
 Therefore, if we dont need the mutex any more or, when the program ends, we need to free, in this case destroy it using the pthread_mutex_destroy function.
 Destroying a locked mutex can result in undefined behaviour. We have to unlock it first.
+
+### Steps of the program
+1. first we check for invalid input. Input can only be integers. Max Philo count = 200, min philo count = 1, min time time to eat, time to die, time to sleep = 60 ms.
+2. 
 
 ### Monitor thread vs monitoring state by each Tread
 
