@@ -3,17 +3,19 @@
 - [Philosophers](#philosophers)
     - [Introduction](#introduction)
     - [Instructions](#instructions)
-    - [Theory](#theory)
+    - [Threads](#threads)
     - [Data races](#data-races)
     - [Deadlocks](#deadlocks)
-    - [Mutexes](#mutexes)
     - [Atomic operations](#atomic-operations)
+    - [Mutexes](#mutexes)
+    - [Theory](#theory)
     - [Destroying mutexes](#destroying-mutexes)
     - [General Notes](#general-notes)
     - [Ending Threads and freeing rescources](#ending-threads-and-freeing-rescources)
     - [Steps of the program](#steps-of-the-program)
     - [Monitor thread vs monitoring state by each Tread](#monitor-thread-vs-monitoring-state-by-each-tread)
     - [Difference between pthread\_detach and pthread\_join](#difference-between-pthread_detach-and-pthread_join)
+    - [Testing](#testing)
     - [Functions](#functions)
 
 ### Introduction
@@ -41,13 +43,14 @@ Here are the things you need to know if you want to succeed this assignment:
 - Philosophers don’t know if another philosopher is about to die.
 - No need to say that philosophers should avoid dying!
 
-### Theory
-The minimum theoretical possible time to die is 2 x time to eat for even number of philosophers and 3 x time to eat for uneven number philosophers except the lone philosopher case. To ensure the system is fair and philosphers are not snatching forks away right after eating, a thinking period is implemented, if eating time 
+### Threads
+In the context of this project, we utilize threads. A thread, often termed as a lightweight process, is a path of execution within a process. When a thread is created, it runs code concurrently with the main code and other threads. This concurrent execution allows for tasks to be performed simultaneously, improving the efficiency and performance of the program.
 
-![Alt text](image-1.png)
+The key difference between threads and processes lies in their memory space. Threads within the same process share the same memory space, which means they can access the same variables and data structures. This shared memory model allows for faster communication between threads as there's no need for inter-process communication (like pipes), which is required in a multi-process model. However, this also means that care must be taken to avoid problems such as data races, where multiple threads attempt to read and write to the same memory location.
 
+Threads are faster to create and destroy compared to processes, and they require less overhead, making them a suitable choice for tasks that are relatively small or need to share a significant amount of data with other tasks. However, programming with threads can be complex due to the need for synchronization mechanisms (like mutexes or semaphores) to prevent data inconsistencies and other concurrency-related issues.
 
-
+In the context of the Dining Philosophers problem, each philosopher could be represented by a thread. The actions of eating, thinking, and sleeping could be different states in the life cycle of these threads.
 
 ### Data races
 A data race occurs, when two or more threads are accessing the same variable in a not thread safe manner and at least one of the threads is perfoming a write operation. This can lead to inaccurate or completely messed up values, since the variable can be in the writing process while its being read.
@@ -55,16 +58,22 @@ To avoid this, we need some way of synchronizing the threads for critical parts 
 A data race occurs when two or more threads access the same memory location concurrently, and at least one of the accesses is for writing, and the threads are not using any mechanism to synchronize their accesses to that memory. This can lead to inconsistent and unpredictable results. Mutexes help us avoid this problem by ensuring that only one thread can access the shared data at a time.
 
 ### Deadlocks
-A deadlock can occur when a thread is blocked by another thread. In our philospher program the forks are mutexes 
+This occurs when two or more threads are unable to proceed because each is waiting for the other to release a resource. For example, in the Dining Philosophers problem, a deadlock could occur if each philosopher picks up one fork and then waits for the other, which is held by another philosopher.
+Example for this would be if each philosopher picks up his left fork and then no one can pick up the right fork.
+
+### Atomic operations
+It is not enough, to check a value, for example if the simulation should end in a threadsafe manner, and then afterwards do some operation like eating or sleeping. This is because after we checked the value and before executing the action, the value can have changed. For this reason we need to perform the whole action within the locked mutex or mutexes if we need to check several values for our condition, like if the philosopher is still alive and the simulation should still run. Atomic operations are crucial to prevent race conditions.
 
 ### Mutexes
 To avoid data races, we need we use mutexes. Mutex stands for mutual exclusion.
 Lets say, we have one thread, that writes into a shared variable and another thread that reads this variable.
 Before a thread can read or write, it needs to aquire (lock) the mutex. A mutex can only be locked by one thread. Another thread, that is trying to lock the same mutex will be blocked until it can lock the mutex. 
 
+### Theory
+The minimum theoretical possible time to die is 2 x time to eat for even number of philosophers and 3 x time to eat for uneven number philosophers except the lone philosopher case. To ensure the system is fair and philosphers are not snatching forks away right after eating, a thinking period is implemented, if eating time 
 
-### Atomic operations
-It is not enough, to check a value, for example if the simulation should end in a threadsafe manner, and then afterwards do some operation like eating or sleeping. This is because after we checked the value and before executing the action, the value can have changed. For this reason we need to perform the whole action within the locked mutex or mutexes if we need to check several values for our condition, like if the philosopher is still alive and the simulation should still run. Atomic operations are crucial to prevent race conditions.
+![Alt text](image-1.png)
+
 
 ### Destroying mutexes
 
@@ -93,6 +102,9 @@ Both `pthread_join` and `pthread_detach` are used to clean up resources after a 
 On the other hand, `pthread_detach` doesn't cause the calling thread to wait. Instead, it marks the specified thread as detached. Once a detached thread finishes execution, its resources are automatically reclaimed by the system. However, the exit status of a detached thread cannot be retrieved.
 
 It's important to note that a thread should either be joined or detached to ensure all resources are properly cleaned up. If a thread is not explicitly detached or joined, and it finishes execution, it will remain in a "zombie" state, and some of its resources may not be reclaimed by the system.
+
+### Testing
+
 
 ### Functions
 Before we start, we should look at the Functions, we are allowed to use, so we can better plan the structure of our program.
