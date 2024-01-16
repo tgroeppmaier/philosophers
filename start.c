@@ -1,5 +1,9 @@
 #include "philo.h"
 
+/* depending on the boolean even, the function pointer is either set to philo_eat_even or 
+philo_eat_odd. The loop continues until max meals is reached or indefinately in case of max_meals = -1
+which indicates no limit */
+
 void	philo_routine(t_philo *philo, bool even)
 {
 	bool	(*philo_eat)(t_philo *);
