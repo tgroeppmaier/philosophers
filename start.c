@@ -50,6 +50,10 @@ void	*philo_start(void *data)
 	return (NULL);
 }
 
+/* creates the philo threads and immediately starts them whith the philo_start function.
+after all threads are created, it creates the supervisor thread. after all threads
+are joined, the simulation ends. */
+
 bool	start_threads(t_table *table)
 {
 	int	i;
