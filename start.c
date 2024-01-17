@@ -11,8 +11,7 @@ void	philo_routine(t_philo *philo, bool even)
 		philo_eat = philo_eat_even;
 	else
 		philo_eat = philo_eat_odd;
-	while (philo->meals_counter < philo->table->max_meals
-		|| philo->table->max_meals == -1)
+	while (1)
 	{
 		if (philo_eat(philo) == false)
 			break ;
@@ -22,8 +21,9 @@ void	philo_routine(t_philo *philo, bool even)
 			break ;
 		if (!philo_think(philo))
 			break ;
+		if (philo->meals_counter == philo->table->max_meals)
+			set_bool(&philo->lock, &philo->full, true);
 	}
-	set_bool(&philo->lock, &philo->full, true);
 }
 
 void	*philo_start(void *data)

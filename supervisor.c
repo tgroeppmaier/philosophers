@@ -36,17 +36,21 @@ void	*supervisor(void *data)
 	table = (t_table *)data;
 	while (get_bool(&table->end_lock, &table->end_sim) != true)
 	{
-		i = 0;
+		i = -1;
 		full_philos = 0;
-		while (i < table->philo_count)
+		while (++i < table->philo_count)
 		{
 			current_time = get_time_diff(table->start_time);
 			if (!check_philo_alive(table, i, current_time, &full_philos))
 				return (NULL);
-			i++;
 		}
 		if (full_philos == table->philo_count)
+		{
+			pthread_mutex_lock(&table->end_lock);
+			table->end_sim = true;
+			pthread_mutex_unlock(&table->end_lock);
 			break ;
+		}
 	}
 	return (NULL);
 }
