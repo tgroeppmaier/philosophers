@@ -25,7 +25,6 @@ The challenge is to come up with a protocol that allows each philosopher to peri
 
 
 ### Instructions 
-Here are the things you need to know if you want to succeed this assignment:
 - One or more philosophers sit at a round table.
   There is a large bowl of spaghetti in the middle of the table.
 - The philosophers alternatively eat, think, or sleep.
@@ -90,7 +89,7 @@ Destroying a locked mutex can result in undefined behaviour. We have to unlock i
 2. Initialization of table struct 
 3. Creation of fork and philo arrays
 4. Initialization of fork and philo structs
-5. 
+5. [Start threads function](https://github.com/tgroeppmaier/philosophers/blob/main/start.c#L53C17-L53C17)
 
 ### Monitor thread vs monitoring state by each Tread
 
