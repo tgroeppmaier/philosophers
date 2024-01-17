@@ -1,13 +1,12 @@
 #include "philo.h"
 
-/* depending on the boolean even, the function pointer is either set to philo_eat_even or 
-philo_eat_odd. The loop continues until max meals is reached or indefinately in case of max_meals = -1
-which indicates no limit */
+/* depending on the boolean even, the function pointer is either set to 
+philo_eat_even or philo_eat_odd. The loop continues until max meals is
+reached or indefinately in case of	max_meals = -1 which indicates no limit */
 
 void	philo_routine(t_philo *philo, bool even)
 {
-	bool	(*philo_eat)(t_philo *);
-
+	bool (*philo_eat)(t_philo *);
 	if (even)
 		philo_eat = philo_eat_even;
 	else
@@ -50,9 +49,10 @@ void	*philo_start(void *data)
 	return (NULL);
 }
 
-/* creates the philo threads and immediately starts them whith the philo_start function.
-after all threads are created, it creates the supervisor thread. after all threads
-are joined, the simulation ends. */
+/* creates the philo threads and immediately starts them whith the philo_start
+function.after all threads are created,
+	it creates the supervisor thread. after all threads are joined,
+	the simulation ends. */
 
 bool	start_threads(t_table *table)
 {

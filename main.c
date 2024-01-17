@@ -30,7 +30,7 @@ bool	initialize_table(int argc, char **argv, t_table *table)
 
 int	main(int argc, char **argv)
 {
-	t_table table;
+	t_table	table;
 
 	memset(&table, 0, sizeof(table));
 	if (!check_input(argc, argv))
