@@ -14,7 +14,8 @@ bool	unlock_forks(t_philo *philo, bool ret)
 	return (ret);
 }
 
-/* thinking time = time to eat x 2 - time to sleep*/
+/* if philo count is odd && time 2 eat < time 2 sleep we need thinking period, to prevent philos
+to snatch forks right after they wa thinking time = time to eat x 2 - time to sleep is implemented to make the system fair*/
 
 bool	philo_think(t_philo *philo)
 {

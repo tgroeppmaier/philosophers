@@ -1,7 +1,8 @@
 #include "philo.h"
 
 /* depending on the boolean even, the function pointer is either set to 
-philo_eat_even or philo_eat_odd. The loop continues until */
+philo_eat_even or philo_eat_odd. in every step is a check, if the simulation
+should still continue and if the philo is still alive */
 
 void	philo_routine(t_philo *philo, bool even)
 {
@@ -24,6 +25,10 @@ void	philo_routine(t_philo *philo, bool even)
 			set_bool(&philo->lock, &philo->full, true);
 	}
 }
+
+/* special routine for lone philo. 
+odd philo sleep first for time to eat / 2 so all even philos can safely eat first
+and then start the routine */
 
 void	*philo_start(void *data)
 {
