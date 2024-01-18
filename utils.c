@@ -53,6 +53,9 @@ void	print_last_meal_time(t_philo *philo)
 	pthread_mutex_unlock(&philo->table->print_mutex);
 }
 
+/* before printing, it checks, if the philo is still alive and
+the simulation is still running */
+
 void	print_atomic(t_philo *philo, char *message)
 {
 	pthread_mutex_lock(&philo->lock);

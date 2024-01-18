@@ -14,6 +14,8 @@ bool	unlock_forks(t_philo *philo, bool ret)
 	return (ret);
 }
 
+/* thinking time = time to eat x 2 - time to sleep*/
+
 bool	philo_think(t_philo *philo)
 {
 	long	thinking_t;

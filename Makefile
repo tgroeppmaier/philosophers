@@ -7,7 +7,7 @@ time.c supervisor.c operations.c utils.c
 OBJ = $(SRC:.c=.o)
 HEADER = philo.h
 
-.PHONY: all fclean re tsan
+.PHONY: all clean fclean re tsan
 
 all: $(NAME)
 
