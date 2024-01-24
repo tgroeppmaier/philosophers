@@ -6,13 +6,13 @@
   - [Concepts](#concepts)
     - [Threads](#threads)
     - [Data races](#data-races)
+    - [Mutexes](#mutexes)
     - [Deadlocks](#deadlocks)
     - [Atomic operations](#atomic-operations)
-    - [Mutexes](#mutexes)
-  - [Theory](#theory)
-    - [Fairness](#fairness)
+    - [Starvation](#starvation)
       - [Even number of philosophers](#even-number-of-philosophers)
       - [Odd number of philosophers](#odd-number-of-philosophers)
+  - [Theory](#theory)
   - [Ending Threads and cleaning up rescources](#ending-threads-and-cleaning-up-rescources)
     - [Destroying Mutexes](#destroying-mutexes)
     - [Memory Management](#memory-management)
@@ -28,6 +28,9 @@
 ## Introduction
 This project is the [42](https://42.fr/en/homepage/) implementation the famous Dining Philosophers problem, a classic synchronization problem in computer science. It was first introduced by Edsger Dijkstra in 1965 and is a representation of a scenario where multiple processes (threads) need to access shared resources (forks) in a synchronized manner. The goal is to avoid deadlocks, data races, and starvation, ensuring that all philosophers can eat, sleep and think without dying (from starvation).
 
+![Alt text](philo_image.png)
+
+
 ## Problem statement
 - One or more philosophers sit at a round table.
   There is a large bowl of spaghetti in the middle of the table.
@@ -42,8 +45,8 @@ This project is the [42](https://42.fr/en/homepage/) implementation the famous D
   start sleeping. Once awake, they start thinking again. The simulation stops when
   a philosopher dies of starvation.
 - Every philosopher needs to eat and should never starve.
-- Philosophers don’t speak with each other.
-- Philosophers don’t know if another philosopher is about to die.
+- Philosophers don't speak with each other.
+- Philosophers don't know if another philosopher is about to die.
 - No need to say that philosophers should avoid dying!
 - According to the evaluation sheet, no  values lower than 60 ms are allowed for t_die, t_eat, t_sleep and no more than 200 Philosphers
 
@@ -59,43 +62,54 @@ Threads are faster to create and destroy compared to processes, and they require
 In the context of the Dining Philosophers problem, each philosopher could be represented by a thread. The actions of eating, thinking, and sleeping could be different states in the life cycle of these threads.
 
 ### Data races
-A data race occurs, when two or more threads are accessing the same variable in a not thread safe manner and at least one of the threads is perfoming a write operation. This can lead to inaccurate or completely messed up values, since the variable can be in the writing process while its being read.
-To avoid this, we need some way of synchronizing the threads for critical parts of our program (the read and write parts) like mutexes or semaphores.
-A data race occurs when two or more threads access the same memory location concurrently, and at least one of the accesses is for writing, and the threads are not using any mechanism to synchronize their accesses to that memory. This can lead to inconsistent and unpredictable results. Mutexes help us avoid this problem by ensuring that only one thread can access the shared data at a time.
-
-### Deadlocks
-This occurs when two or more threads are unable to proceed because each is waiting for the other to release a resource. For example, in the Dining Philosophers problem, a deadlock could occur if each philosopher picks up one fork and then waits for the other, which is held by another philosopher.
-Example for this would be if each philosopher picks up his left fork and then no one can pick up the right fork.
-
-### Atomic operations
-It is not enough, to check a value, for example if the simulation should end in a threadsafe manner, and then afterwards do some operation like eating or sleeping. This is because after we checked the value and before executing the action, the value can have changed. For this reason we need to perform the whole action within the locked mutex or mutexes if we need to check several values for our condition, like if the philosopher is still alive and the simulation should still run. Atomic operations are crucial to prevent race conditions.
+A data race occurs when two or more threads access the same memory location concurrently, and at least one of the accesses is for writing, and the threads are not using any mechanism to synchronize their accesses to that memory. This can lead to inconsistent and unpredictable results. To avoid this, we need a way of synchronizing the threads for critical parts of our program (the read and write parts) like mutexes or semaphores.
+Mutexes help us avoid this problem by ensuring that only one thread can access the shared data at a time.
 
 ### Mutexes
-To avoid data races, we need we use mutexes. Mutex stands for mutual exclusion.
+To avoid data races, we use mutexes. Mutex stands for mutual exclusion.
 Lets say, we have one thread, that writes into a shared variable and another thread that reads this variable.
-Before a thread can read or write, it needs to aquire (lock) the mutex. A mutex can only be locked by one thread. Another thread, that is trying to lock the same mutex will be blocked until it can lock the mutex. 
+Before a thread can read or write, it needs to aquire (lock) the mutex. A mutex can only be locked by one thread. Another thread, that is trying to lock the same mutex will be blocked until it can lock the mutex, which means it is waiting for the mutex to become available. When working with multiple mutexes it is important to think about the order in which the threads lock the mutexes to avoid Deadlocks.
+
+### Deadlocks
+A Deadlock occurs when two or more threads are unable to proceed because each is waiting for the other to release a resource (mutex). For example, in the Dining Philosophers problem, a deadlock could occur if each philosopher picks up his left fork (mutex) and then waits to pick up his right fork. But his right fork is another philosphers left fork. So they are all stuck and the program is not moving forward.
+
+### Atomic operations
+It is not enough, to check a value, for example if the simulation should end in a threadsafe manner, and then afterwards do some operation like eating or sleeping. This is because after we checked the value and before executing the action, the value can have changed. For this reason we need to perform the whole action within the locked mutex or mutexes if we need to check several values for our operation, like if the philosopher is still alive and the simulation should still run. Atomic operations are crucial to prevent race conditions.
+
+### Starvation
+
+In the context of the Dining Philosophers problem, starvation means, that a philospher repeatedly loses out his turn on eating because other philosphers (threads) are faster to pick up the forks.
+To prevent this, we have to implement some mechanism to make the system fair and ensure that each philosopher gets an equal opportunity to eat, thereby preventing starvation. This means that each philosopher should be able to eat the same number of times.
+
+Example of unfair scenario with three philosophers:
+
+1. Philosopher 1 starts eating.
+2. Once Philosopher 1 finishes, Philosopher 2 starts eating.
+3. After Philosopher 2 finishes, Philosopher 1 starts eating again.
+4. Philosopher 3 potentially dies of starvation
+
+Depending on the time values set and the number of philosphers, the system can be fair by default. With other values, we need to implement a thinking period.
+
+
+
+#### Even number of philosophers
+In a scenario with an even number of philosophers, our system is inherently fair. This is because the tester of our program should not use time values lower than 60ms. This ensures, there is a mandatory sleeping period of at least 60 ms after each eating session. While half of the philosophers are eating, the other half are either sleeping or waiting, depending on  the used time values. But they will always have at least 60 ms headstart over the philospohers, that just ate.
+| philo | time | action | duration |
+|-------|------|--------|----------|
+| 2     | 0ms  | eat    | 200ms    |
+| 1     | 0ms  | wait   | 200ms    |
+| 2     | 200ms| sleep  | 60ms     |
+| 1     | 200ms| eat    | 200ms    |
+| 2     | 260ms| wait   | 140ms    |
+| 1     | 400ms| sleep  | 60ms     |
+| 2     | 400ms| eat    | 200ms    |
+
+#### Odd number of philosophers
+In a scenario with an odd number of philosophers, the fairness mechanism is slightly more complex. In the first cycle, all the even-indexed philosophers eat. In the second cycle, all the odd-indexed philosophers eat, except for one, due to the shortage of forks. This remaining philosopher has to wait until the third cycle to eat. However, by this time, the philosophers from the first cycle may have completed their entire routine (if there's no thinking period implemented) and be ready to pick up the forks as soon as they become available. To prevent any philosopher from repeatedly missing out on eating, we implement a thinking period. This period bridges the time gap and ensures that every philosopher gets a chance to eat in each full cycle.
 
 ## Theory
 The minimum theoretical possible time to die is 2 x time to eat for even number of philosophers and 3 x time to eat for uneven number philosophers except the lone philosopher case. To ensure the system is fair and philosphers are not snatching forks away right after eating, a thinking period is implemented, if eating time 
 
-![Alt text](image-1.png)
-
-### Fairness
-In the context of the Dining Philosophers problem, fairness ensures that each philosopher gets an equal opportunity to eat, thereby preventing starvation. This means that each philosopher should be able to eat the same number of times.
-
-Consider a scenario with three philosophers:
-
-1. Philosopher 1 starts eating.
-2. Once Philosopher 1 finishes, Philosopher 2 starts eating.
-3. After Philosopher 2 finishes, Philosopher 3 starts eating.
-
-This cycle repeats, ensuring that each philosopher gets a fair turn at eating. This is a simplistic view of fairness, and in a real system, more complex algorithms might be needed to ensure fairness, especially when dealing with a larger number of philosophers.
-
-#### Even number of philosophers
-In a scenario with an even number of philosophers, our system is inherently fair. This is because there is a mandatory sleeping period of at least 60 ms after each eating session. While half of the philosophers are eating, the other half are either thinking or sleeping. This ensures that there's always a time gap that allows the non-eating philosophers to pick up the forks once they become available. This mechanism prevents any philosopher from immediately starting another eating session without waiting, thus ensuring fairness.
-
-#### Odd number of philosophers
-In a scenario with an odd number of philosophers, the fairness mechanism is slightly more complex. In the first cycle, all the even-indexed philosophers eat. In the second cycle, all the odd-indexed philosophers eat, except for one, due to the shortage of forks. This remaining philosopher has to wait until the third cycle to eat. However, by this time, the philosophers from the first cycle may have completed their entire routine (if there's no thinking period implemented) and be ready to pick up the forks as soon as they become available. To prevent any philosopher from repeatedly missing out on eating, we implement a thinking period. This period bridges the time gap and ensures that every philosopher gets a chance to eat in each full cycle.
 
 ## Ending Threads and cleaning up rescources
 Initialization of mutexes allocates Memory dynamically.
