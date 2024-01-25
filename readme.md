@@ -12,26 +12,22 @@
     - [Starvation](#starvation)
       - [Even number of philosophers](#even-number-of-philosophers)
       - [Odd number of philosophers](#odd-number-of-philosophers)
-  - [Theory](#theory)
-  - [Ending Threads and cleaning up rescources](#ending-threads-and-cleaning-up-rescources)
-    - [Destroying Mutexes](#destroying-mutexes)
-    - [Memory Management](#memory-management)
-    - [System Resources](#system-resources)
-    - [Avoiding Undefined Behavior](#avoiding-undefined-behavior)
-  - [General Notes](#general-notes)
-  - [Flow of the program](#flow-of-the-program)
-  - [Monitor thread vs monitoring state by each Tread](#monitor-thread-vs-monitoring-state-by-each-tread)
-  - [Difference between pthread\_detach and pthread\_join](#difference-between-pthread_detach-and-pthread_join)
+  - [Thread Termination and Resource Cleanup](#thread-termination-and-resource-cleanup)
+  - [Ending Threads and Cleanup](#ending-threads-and-cleanup)
+    - [Ending Threads](#ending-threads)
+    - [Destroying mutexes](#destroying-mutexes)
   - [Testing](#testing)
+  - [Difference between pthread\_detach and pthread\_join](#difference-between-pthread_detach-and-pthread_join)
   - [Functions](#functions)
 
 ## Introduction
-This project is the [42](https://42.fr/en/homepage/) implementation the famous Dining Philosophers problem, a classic synchronization problem in computer science. It was first introduced by Edsger Dijkstra in 1965 and is a representation of a scenario where multiple processes (threads) need to access shared resources (forks) in a synchronized manner. The goal is to avoid deadlocks, data races, and starvation, ensuring that all philosophers can eat, sleep and think without dying (from starvation).
+This project is the [42 school](https://42.fr/en/homepage/) implementation the famous Dining Philosophers problem, a classic synchronization problem in computer science. It was first introduced by Edsger Dijkstra in 1965 and is a representation of a scenario where multiple processes (threads) need to access shared resources (forks) in a synchronized manner. The goal is to avoid deadlocks, data races, and starvation, ensuring that all philosophers can eat, sleep and think without dying (from starvation).
 
 ![Alt text](philo_image.png)
 
 
 ## Problem statement
+You can find the full instructions [here](philo.pdf)
 - One or more philosophers sit at a round table.
   There is a large bowl of spaghetti in the middle of the table.
 - The philosophers alternatively eat, think, or sleep.
@@ -55,42 +51,54 @@ This project is the [42](https://42.fr/en/homepage/) implementation the famous D
 ### Threads
 In the context of this project, we utilize threads. A thread, often termed as a lightweight process, is a path of execution within a process. When a thread is created, it runs code concurrently with the main code and other threads. This concurrent execution allows for tasks to be performed simultaneously, improving the efficiency and performance of the program.
 
-The key difference between threads and processes lies in their memory space. Threads within the same process share the same memory space, which means they can access the same variables and data structures. This shared memory model allows for faster communication between threads as there's no need for inter-process communication (like pipes), which is required in a multi-process model. However, this also means that care must be taken to avoid problems such as data races, where multiple threads attempt to read and write to the same memory location.
+The key difference between threads and processes lies in their memory space. Threads within the same process share the same memory space, which means they can access the same variables and data structures. This shared memory model allows for faster communication between threads as there's no need for inter-process communication (like pipes), which is required in a multi-process model. However, this also means that care must be taken to avoid problems such as [data races](#data-races), where multiple threads attempt to read and write to the same memory location.
 
-Threads are faster to create and destroy compared to processes, and they require less overhead, making them a suitable choice for tasks that are relatively small or need to share a significant amount of data with other tasks. However, programming with threads can be complex due to the need for synchronization mechanisms (like mutexes or semaphores) to prevent data inconsistencies and other concurrency-related issues.
+Threads are faster to create and destroy compared to processes, and they require less overhead, making them a suitable choice for tasks that are relatively small or need to share a significant amount of data with other tasks. However, programming with threads can be complex due to the need for synchronization mechanisms (like [mutexes](#mutexes) or semaphores) to prevent data inconsistencies and other concurrency-related issues.
 
-In the context of the Dining Philosophers problem, each philosopher could be represented by a thread. The actions of eating, thinking, and sleeping could be different states in the life cycle of these threads.
+In the context of this Dining Philosophers problem, each philosopher should be represented by a thread. The actions of eating, thinking, and sleeping will be different states in the life cycle of these threads.
 
 ### Data races
 A data race occurs when two or more threads access the same memory location concurrently, and at least one of the accesses is for writing, and the threads are not using any mechanism to synchronize their accesses to that memory. This can lead to inconsistent and unpredictable results. To avoid this, we need a way of synchronizing the threads for critical parts of our program (the read and write parts) like mutexes or semaphores.
 Mutexes help us avoid this problem by ensuring that only one thread can access the shared data at a time.
 
 ### Mutexes
-To avoid data races, we use mutexes. Mutex stands for mutual exclusion.
-Lets say, we have one thread, that writes into a shared variable and another thread that reads this variable.
-Before a thread can read or write, it needs to aquire (lock) the mutex. A mutex can only be locked by one thread. Another thread, that is trying to lock the same mutex will be blocked until it can lock the mutex, which means it is waiting for the mutex to become available. When working with multiple mutexes it is important to think about the order in which the threads lock the mutexes to avoid Deadlocks.
+
+Mutexes, short for mutual exclusion, are used to prevent data races in multi-threaded programming. They ensure that only one thread can access shared data at a time.  
+Consider a scenario where one thread writes to a shared variable and another thread reads this variable. Both threads must acquire (lock) the mutex before they can access the variable to ensure that they do not attempt to read and write the data simultaneously.
+
+- **Creation**: A mutex is created as a variable of type `pthread_mutex_t`. This variable will then be used as the mutex.
+
+- **Initialization**: After creation, a mutex is initialized using the `pthread_mutex_init` function. This function prepares the mutex for use.
+
+- **Locking and Unlocking**: Before a thread can read or write shared data, it must acquire (or lock) the mutex using the `pthread_mutex_lock` function. Once the thread has finished with the data, it should release (or unlock) the mutex using the `pthread_mutex_unlock` function. This allows other threads to acquire the mutex and access the data.
+
+- **Destruction**: When a mutex is no longer needed, it should be destroyed (or freed) using the `pthread_mutex_destroy` function. This releases the resources that were allocated to the mutex.
+
+When working with multiple mutexes, it's important to carefully consider the order in which threads lock the mutexes. If not handled correctly, this can lead to a situation known as a [deadlock](#deadlocks), where two or more threads are each waiting for the other to release a mutex, resulting in all of them being stuck.
 
 ### Deadlocks
 A Deadlock occurs when two or more threads are unable to proceed because each is waiting for the other to release a resource (mutex). For example, in the Dining Philosophers problem, a deadlock could occur if each philosopher picks up his left fork (mutex) and then waits to pick up his right fork. But his right fork is another philosphers left fork. So they are all stuck and the program is not moving forward.
 
 ### Atomic operations
-It is not enough, to check a value, for example if the simulation should end in a threadsafe manner, and then afterwards do some operation like eating or sleeping. This is because after we checked the value and before executing the action, the value can have changed. For this reason we need to perform the whole action within the locked mutex or mutexes if we need to check several values for our operation, like if the philosopher is still alive and the simulation should still run. Atomic operations are crucial to prevent race conditions.
+Atomic operations in the context of multithreading are operations that are completed in a single step without the possibility of being interrupted. When an atomic operation starts, it is guaranteed to finish without any thread being able to access the operation data until it has fully completed.  
+This is crucial in preventing race conditions, where the output is dependent on the sequence or timing of other uncontrollable events.  
+
+Example:  
+It is not enough, to check if the simulation should end in a threadsafe manner, and then afterwards do some operation like eating or sleeping. This is because after we checked the value and before executing the action, the value can have changed. For this reason we need to perform the whole action within the locked mutex or mutexes if we need to check several values for our operation, like if the philosopher is still alive and the simulation should still run.
 
 ### Starvation
 
 In the context of the Dining Philosophers problem, starvation means, that a philospher repeatedly loses out his turn on eating because other philosphers (threads) are faster to pick up the forks.
-To prevent this, we have to implement some mechanism to make the system fair and ensure that each philosopher gets an equal opportunity to eat, thereby preventing starvation. This means that each philosopher should be able to eat the same number of times.
+To prevent this, we have to implement a mechanism to make the system fair and ensure that each philosopher gets an equal opportunity to eat, thereby preventing starvation. This means that each philosopher should be able to eat the same number of times.
 
 Example of unfair scenario with three philosophers:
 
 1. Philosopher 1 starts eating.
 2. Once Philosopher 1 finishes, Philosopher 2 starts eating.
-3. After Philosopher 2 finishes, Philosopher 1 starts eating again.
+3. After Philosopher 2 finishes, Philosopher 1 starts eating again
 4. Philosopher 3 potentially dies of starvation
 
 Depending on the time values set and the number of philosphers, the system can be fair by default. With other values, we need to implement a thinking period.
-
-
 
 #### Even number of philosophers
 In a scenario with an even number of philosophers, our system is inherently fair. This is because the tester of our program should not use time values lower than 60ms. This ensures, there is a mandatory sleeping period of at least 60 ms after each eating session. While half of the philosophers are eating, the other half are either sleeping or waiting, depending on  the used time values. But they will always have at least 60 ms headstart over the philospohers, that just ate.
@@ -106,43 +114,80 @@ In a scenario with an even number of philosophers, our system is inherently fair
 
 #### Odd number of philosophers
 In a scenario with an odd number of philosophers, the fairness mechanism is slightly more complex. In the first cycle, all the even-indexed philosophers eat. In the second cycle, all the odd-indexed philosophers eat, except for one, due to the shortage of forks. This remaining philosopher has to wait until the third cycle to eat. However, by this time, the philosophers from the first cycle may have completed their entire routine (if there's no thinking period implemented) and be ready to pick up the forks as soon as they become available. To prevent any philosopher from repeatedly missing out on eating, we implement a thinking period. This period bridges the time gap and ensures that every philosopher gets a chance to eat in each full cycle.
+The thinking time for odd philosopher is calculated as followed:  
+```c
+if (2 * t_eat > t_sleep) {
+  t_think = 2 * t_eat - t_sleep;
+}
+```
+## Thread Termination and Resource Cleanup
 
-## Theory
-The minimum theoretical possible time to die is 2 x time to eat for even number of philosophers and 3 x time to eat for uneven number philosophers except the lone philosopher case. To ensure the system is fair and philosphers are not snatching forks away right after eating, a thinking period is implemented, if eating time 
+Mutexes, used in multi-threaded programming for safe access to shared resources, are dynamically allocated in memory. Proper management of these resources is crucial:
+
+- **Memory Management**: Unused mutexes reserve memory, leading to potential memory leaks. Over time, this can cause system crashes due to memory exhaustion.
+
+- **System Resources**: Operating systems limit the number of mutexes. Not destroying unused mutexes may exhaust this limit, causing program failures.
+
+- **Avoiding Undefined Behavior**: Using a mutex after its destruction results in undefined behavior, leading to potential crashes or data corruption.
+
+Therefore, when a program ends or a mutex is no longer needed, it is important to destroy it using the `pthread_mutex_destroy` function. Ensure the mutex is unlocked before destruction to avoid undefined behavior. This practice is essential for effective memory management, system resource availability, and overall program stability.
+
+## Ending Threads and Cleanup
+
+### Ending Threads
+
+When threads have completed their tasks, it is crucial to properly terminate them. This process frees up system resources and prevents potential issues such as memory leaks or system instability. In POSIX threads (pthreads), there are two primary methods for ending threads:
+
+- `pthread_join()`: This function is used when you want the calling thread to wait for a specific thread to finish execution. It blocks the calling thread, meaning it makes it wait and not perform any other task until the specified thread has terminated. This is particularly useful when there is a dependency between threads, and one thread needs to wait for another to finish before it can proceed. Additionally, `pthread_join()` allows the calling thread to retrieve the exit status of the joined thread, which can be useful for error checking and debugging.
+
+- `pthread_detach()`: This function is used when you want a thread to run independently of the calling thread. It detaches the specified thread from the calling thread, meaning it allows the specified thread to execute independently and clean up its resources automatically once it has finished. This is useful when the calling thread doesn't need to wait for the other thread to finish and doesn't need to retrieve its exit status. The detached thread will run until it has completed its task and then terminate naturally.
+
+Proper thread management is key to efficient multi-threaded programming and can help prevent a range of potential issues.
+
+### Destroying mutexes
+
+Mutexes are initialized dynamically, which means they occupy memory space during their lifetime.
+
+When a mutex is no longer needed, or when the program is about to end, it is crucial to properly clean up these resources. This process involves 'destroying' the mutex using the `pthread_mutex_destroy` function. This function effectively frees up the memory that was allocated for the mutex, helping to prevent memory leaks and ensuring efficient use of system resources.
+
+However, it is important to note that a mutex must be unlocked before it can be destroyed. Attempting to destroy a locked mutex can result in undefined behavior, which could include program crashes or data corruption. Therefore, always ensure that a mutex is unlocked before calling `pthread_mutex_destroy`.
+
+By properly managing the lifecycle of mutexes - initializing them when needed, unlocking them when done, and destroying them when they are no longer needed - we can maintain system stability and resource efficiency in our multi-threaded programs.
+
+## Testing
+from the evaluation sheet:  
+
+- Do not test with more than 200 philosophers.
+- Do not test with time_to_die or time_to_eat or time_to_sleep set to values lower than 60 ms.
+- Test 1 800 200 200. The philosopher should not eat and should die.
+- Test 5 800 200 200. No philosopher should die.
+- Test 5 800 200 200 7. No philosopher should die and the simulation should stop when every philosopher has
+eaten at least 7 times. 
+- Test 4 410 200 200. No philosopher should die. 
+- Test 4 310 200 100. One philosopher should die. 
+- Test with 2 philosophers and check the different times: a death delayed by more than 10 ms is unacceptable. 
+- Test with any values of your choice to verify all the requirements. Ensure philosophers die at the right time,
+that they don't steal forks, and so forth.
+
+It's crucial to run numerous tests with varying time values. This is because some issues may only surface after 10 or more runs with identical settings. Additionally, it's beneficial to utilize tools that can detect synchronization errors. Here are a couple of recommendations:
+
+- **Threadsanitizer**: This tool can be used by simply compiling with the command `clang -fsanitize=thread` and running the program as usual.
+
+- **Valgrind with Helgrind**: This tool is another excellent option for detecting synchronization errors. But keep in mind this comes with a significant performance overhead which might be enough to kill your philosphers.
 
 
-## Ending Threads and cleaning up rescources
-Initialization of mutexes allocates Memory dynamically.
-Therefore, if we dont need the mutex any more or, when the program ends, we need to free, in this case destroy it using the pthread_mutex_destroy function.
-Destroying a locked mutex can result in undefined behaviour. We have to unlock it first.
-### Destroying Mutexes
+ for the test with 4 philos 410ms 200ms 200ms we need to let it run for at least a few minutes to ensure that no one dies. With this test, it is also possible to test the limits of our implementation, by reducing the time to die even further towards the theoretical limit of 400ms.  
 
-Mutexes, or mutual exclusion objects, are a fundamental part of multi-threaded programming. They allow threads to safely access shared resources by ensuring that only one thread can access the resource at a time. However, like many resources in programming, mutexes are not infinite and need to be managed properly.
-
-One of the key aspects of mutex management is the destruction of mutexes when they are no longer needed. This is crucial for several reasons:
-
-### Memory Management
-Mutexes are dynamically allocated in memory. This means that each time a mutex is created, a certain amount of memory is reserved for it. If a mutex is not destroyed after it's no longer needed, this memory remains reserved, leading to a memory leak. Over time, these leaks can add up and consume a significant amount of memory, potentially causing the system to run out of memory and crash.
-
-### System Resources
-Mutexes are considered system resources. Most operating systems have a limit on the number of mutexes that can be created. If mutexes are not destroyed after use, you may reach this limit and be unable to create new mutexes when needed. This could lead to unexpected behavior or even failure of your program.
-
-### Avoiding Undefined Behavior
-Destroying a mutex is also important to ensure the correct behavior of your program. Using a mutex after it has been destroyed results in undefined behavior, which could manifest as crashes, data corruption, or other unpredictable outcomes.
-
-In conclusion, destroying mutexes when they are no longer needed is an essential practice in multi-threaded programming. It helps manage memory effectively, ensures the availability of system resources, and contributes to the overall stability and correctness of your program.
-## General Notes
-- Be careful with `pthread_detach` function and be 100% sure that the detached Thread is not using any variables that might be altered by the main thread or that you use some form of synchronization. For example can the philosopher threads end and then the main thread free resources, which are still used by a still running detached thread.
-
-
-## Flow of the program
-1. first we check for invalid input. Input can only be integers. Max Philo count = 200, min philo count = 1, min time time to eat, time to die, time to sleep = 60 ms.
-2. Initialization of table struct 
-3. Creation of fork and philo arrays
-4. Initialization of fork and philo structs
-5. [Starting threads](https://github.com/tgroeppmaier/philosophers/blob/main/start.c#L53C17-L53C17)
-
-## Monitor thread vs monitoring state by each Tread
+You can use a script like this and then either watch it for any irregularities or save the output into a file with > out.txt and then grep it.  
+```bash
+your_command="./philo 5 600 200 200"
+num_executions=1000
+for ((i = 1; i <= num_executions; i++)); do
+    eval "$your_command"
+    sleep 0.5
+done
+```
+The minimum theoretical possible time to die is 2 x time to eat for even number of philosophers and 3 x time to eat for uneven number philosophers except for the lone philosopher case.
 
 ## Difference between pthread_detach and pthread_join
 Both `pthread_join` and `pthread_detach` are used to clean up resources after a thread has finished, but they work in different ways.
@@ -153,8 +198,7 @@ On the other hand, `pthread_detach` doesn't cause the calling thread to wait. In
 
 It's important to note that a thread should either be joined or detached to ensure all resources are properly cleaned up. If a thread is not explicitly detached or joined, and it finishes execution, it will remain in a "zombie" state, and some of its resources may not be reclaimed by the system.
 
-## Testing
-
+Be careful with `pthread_detach` function and be 100% sure that the detached Thread is not using any variables that might be altered by the main thread or that you use some form of synchronization. For example can the philosopher threads end and then the main thread free resources, which are still used by a still running detached thread like the monitor thread.
 
 ## Functions
 Before we start, we should look at the Functions, we are allowed to use, so we can better plan the structure of our program.
